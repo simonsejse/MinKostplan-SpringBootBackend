@@ -32,36 +32,37 @@ public class UserDetailsDao implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return !this.isAccountExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return !this.isAccountLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return !this.isCredentialsExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.isEnabled;
     }
+
 }

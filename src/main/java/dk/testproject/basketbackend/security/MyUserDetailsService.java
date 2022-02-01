@@ -17,6 +17,10 @@ public class MyUserDetailsService implements UserDetailsService {
         this.userService = userService;
     }
 
+    /**
+     * This is called after JSONUsernamePasswordAuthenticationFilter
+     * that checks if the authentication can be authenticated
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User userByUsername = userService.getUserByUsername(username);

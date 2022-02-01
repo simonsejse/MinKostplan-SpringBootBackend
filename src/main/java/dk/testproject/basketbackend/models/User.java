@@ -8,11 +8,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Setter
 @Getter
+@Table(name="user")
 @Entity
 public class User {
 
@@ -23,15 +24,19 @@ public class User {
     private Long id;
 
     //Email
-    @Column(name = "email")
+    @Column(name = "name", unique = true)
+    private String username;
+
+    //Email
+    @Column(name = "email", unique = true)
     private String email;
 
     @JsonIgnore
     @Column(name = "password")
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<Role> roles = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Role> roles;
 
     @JsonIgnore
     @Column(name = "account_enabled")
@@ -43,32 +48,17 @@ public class User {
     @Column(name = "account_expired")
     private boolean accountExpired;
 
-    @Column(name = "session_id")
-    private String sid;
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-
-    public User(Long id, String email, String password, Set<Role> roles, boolean accountEnabled, boolean credentialsExpired, boolean accountLocked, boolean accountExpired) {
-        this.id = id;
+    public User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
-        this.roles = roles;
-        this.accountEnabled = accountEnabled;
-        this.credentialsExpired = credentialsExpired;
-        this.accountLocked = accountLocked;
-        this.accountExpired = accountExpired;
+        this.roles = List.of(new Role(ERole.ROLE_USER));
+        this.accountEnabled = true;
+        this.credentialsExpired = false;
+        this.accountLocked = false;
+        this.accountExpired = false;
     }
 
     protected User(){}
-
-    public UserDetails build() {
-        return null;
-    }
 }

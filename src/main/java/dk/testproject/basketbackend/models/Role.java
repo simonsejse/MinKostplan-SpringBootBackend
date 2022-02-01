@@ -26,7 +26,12 @@ public class Role {
     @Column(name = "name", length = 20)
     private ERole role;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    public Role(ERole role) {
+        this.role = role;
+    }
 }
