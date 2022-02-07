@@ -1,5 +1,7 @@
 package dk.testproject.basketbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,12 +28,14 @@ public class Role {
     @Column(name = "name", length = 20)
     private ERole role;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch=FetchType.LAZY)
     private User user;
 
-
-    public Role(ERole role) {
+    public Role(ERole role, User user) {
         this.role = role;
+        this.user = user;
+    }
+    protected Role(){
+
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
 public class MyUserDetailsService implements UserDetailsService {
     private final UserService userService;
@@ -20,10 +22,15 @@ public class MyUserDetailsService implements UserDetailsService {
     /**
      * This is called after JSONUsernamePasswordAuthenticationFilter
      * that checks if the authentication can be authenticated
+     *
+     * @IMPORTANT:
+     * This is how the program uses antMatchers to determine if the user has Role.ADMIN for say because we return a
+     * MyUserDetailsImpl that contains a Collection of authories:
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User userByUsername = userService.getUserByUsername(username);
-        return new UserDetailsDao(userByUsername);
+        return new MyUserDetailsImpl(userByUsername);
     }
+
 }

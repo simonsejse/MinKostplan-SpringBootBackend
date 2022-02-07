@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class UserDetailsDao implements UserDetails {
+public class MyUserDetailsImpl implements org.springframework.security.core.userdetails.UserDetails {
 
     private final String username;
     private final String password;
@@ -18,7 +18,7 @@ public class UserDetailsDao implements UserDetails {
     private final boolean isEnabled;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsDao(User user) {
+    public MyUserDetailsImpl(User user) {
         this.username = user.getEmail();
         this.password = user.getPassword();
         this.isAccountExpired = user.isAccountExpired();

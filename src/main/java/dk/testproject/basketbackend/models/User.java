@@ -1,14 +1,12 @@
 package dk.testproject.basketbackend.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Setter
@@ -31,14 +29,18 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @JsonIgnore
     @Column(name = "password")
     private String password;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.ALL},
+            mappedBy = "user",
+            orphanRemoval = true
+    )
     private List<Role> roles;
 
-    @JsonIgnore
+
     @Column(name = "account_enabled")
     private boolean accountEnabled;
     @Column(name = "credentials_expired")
@@ -48,12 +50,12 @@ public class User {
     @Column(name = "account_expired")
     private boolean accountExpired;
 
-
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.roles = List.of(new Role(ERole.ROLE_USER));
+        this.roles = new ArrayList<>();
+        this.roles.add(new Role(ERole.ROLE_USER, this));
         this.accountEnabled = true;
         this.credentialsExpired = false;
         this.accountLocked = false;

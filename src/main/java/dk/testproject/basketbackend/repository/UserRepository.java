@@ -1,6 +1,7 @@
 package dk.testproject.basketbackend.repository;
 
 import dk.testproject.basketbackend.models.User;
+import dk.testproject.basketbackend.payload.response.UserDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,6 +1,7 @@
 package dk.testproject.basketbackend.controllers;
 
 import dk.testproject.basketbackend.models.User;
+import dk.testproject.basketbackend.payload.response.UserDTO;
 import dk.testproject.basketbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class UserController {
 
     @CrossOrigin("http://localhost:3000/")
     @GetMapping
-    public ResponseEntity<User> index(Authentication authentication) {
-        final User userByUsername = this.userService.getUserByUsername(authentication.getName());
+    public ResponseEntity<UserDTO> index(Authentication authentication) {
+        final UserDTO userByUsername = this.userService.getUserDTOByUsername(authentication.getName());
         return ResponseEntity.ok(userByUsername);
     }
 }
