@@ -1,6 +1,6 @@
 package dk.minkostplan.backend.controllers;
 
-import dk.minkostplan.backend.models.dtos.FoodDTO;
+import dk.minkostplan.backend.models.dtos.recipes.FoodDTO;
 import dk.minkostplan.backend.service.FoodService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

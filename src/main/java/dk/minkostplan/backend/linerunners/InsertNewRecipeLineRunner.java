@@ -1,6 +1,5 @@
-package dk.minkostplan.backend;
+package dk.minkostplan.backend.linerunners;
 
-import org.apache.xmlbeans.impl.tool.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

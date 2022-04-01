@@ -1,6 +1,7 @@
 package dk.minkostplan.backend.controllers;
 
 
+import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.exceptions.RecipeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,11 @@ public class ExceptionHandlingController {
 
     @ExceptionHandler(RecipeException.class)
     public ResponseEntity<Map<String, Object>> mealException(final HttpServletRequest request, RecipeException exception){
+        return createResponseEntity(exception.getStatus(), exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(MetaException.class)
+    public ResponseEntity<Map<String, Object>> metaException(final HttpServletRequest request, MetaException exception){
         return createResponseEntity(exception.getStatus(), exception.getMessage(), request);
     }
 

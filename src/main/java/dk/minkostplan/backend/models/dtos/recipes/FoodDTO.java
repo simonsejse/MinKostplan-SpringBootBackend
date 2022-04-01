@@ -1,8 +1,8 @@
-package dk.minkostplan.backend.models.dtos;
+package dk.minkostplan.backend.models.dtos.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.minkostplan.backend.entities.Food;
-import dk.minkostplan.backend.entities.FoodAttribute;
+import dk.minkostplan.backend.entities.Ingredient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
@@ -10,9 +10,6 @@ import org.springframework.lang.Nullable;
 @Getter
 @Setter
 public class FoodDTO {
-    @JsonProperty(value="amount_needed", required = false)
-    @Nullable
-    private Integer amountNeeded;
     @JsonProperty(value="food_id")
     private Long id;
     @JsonProperty(value="food_type")
@@ -33,6 +30,7 @@ public class FoodDTO {
     private float addedSugars;
     @JsonProperty(value="food_fibers")
     private float fibers;
+    
     public FoodDTO(Food entity){
         this.id = entity.getId();
         this.foodType = entity.getFoodType();
@@ -45,19 +43,6 @@ public class FoodDTO {
         this.addedSugars = entity.getAddedSugars();
         this.fibers = entity.getFibers();
     }
-    public FoodDTO(FoodAttribute foodAttr){
-        this.amountNeeded = foodAttr.getAmount();
-        Food entity = foodAttr.getFood();
-        this.id = entity.getId();
-        this.foodType = entity.getFoodType();
-        this.name = entity.getName();
-        this.kj = entity.getKj();
-        this.kcal = entity.getKcal();
-        this.protein = entity.getProtein();
-        this.carbs = entity.getCarbs();
-        this.fat = entity.getFat();
-        this.addedSugars = entity.getAddedSugars();
-        this.fibers = entity.getFibers();
-    }
+    
     protected FoodDTO(){}
 }

@@ -101,6 +101,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                  .addFilterBefore(jsonUsernamePasswordAuthFilter(), UsernamePasswordAuthenticationFilter.class)*/
                 .authorizeRequests()
                     .expressionHandler(webExpressionHandler())
+                    .antMatchers(HttpMethod.POST, "/api/recipes/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
+                    .antMatchers(HttpMethod.DELETE, "/api/recipes/delete/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/v1/api/user").hasAnyRole("USER", "ADMIN")
                     .antMatchers(HttpMethod.GET, "/api/foods").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/diet-plans/create-diet-plan").hasRole("USER")

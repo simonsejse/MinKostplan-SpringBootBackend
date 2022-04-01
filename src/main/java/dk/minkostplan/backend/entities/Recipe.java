@@ -1,8 +1,9 @@
 package dk.minkostplan.backend.entities;
 
 
-import dk.minkostplan.backend.models.RecipeType;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
@@ -21,16 +22,15 @@ public class Recipe {
             name="recipe_seq_gen",
             allocationSize = 1
     )
-    @Column(name="recipe_id", unique = true)
+    @Column(name="id", unique = true)
     @Id
-    private Long recipeId;
+    private Long id;
 
     @Column(name="recipe_name")
     private String name;
 
-    @Enumerated(value=EnumType.STRING)
     @Column(name="recipe_type")
-    private RecipeType type;
+    private String type;
 
     @Column(name="is_vegetarian", nullable = false)
     private Boolean vegetarian;
@@ -57,9 +57,18 @@ public class Recipe {
     private Boolean sustainable;
 
     @Column(name="pricePerServing")
-    private String pricePerServing;
+    private Double pricePerServing;
 
-    /* One Meal to Many Food Attributes */
+    @Column(name="instructionsHtml")
+    private String instructions;
+
+    @Column(name="serving")
+    private Integer serving;
+
+    @Column(name="readyInMinutes")
+    private Integer readyInMinutes;
+
+    /* One Recipe to Many Food Attributes */
     @OneToMany(
             fetch = FetchType.LAZY,
             cascade = {
@@ -68,7 +77,7 @@ public class Recipe {
             },
             mappedBy= "recipe"
     )
-    private final List<FoodAttribute> ingredients = new ArrayList<>();
+    private final List<Ingredient> ingredients = new ArrayList<>();
 
     @OneToMany(
         fetch = FetchType.LAZY,
@@ -76,62 +85,88 @@ public class Recipe {
         mappedBy = "recipe"
     )
     @SortNatural
-    private final List<MealInstruction> instructions = new LinkedList<>();
+    private final List<RecipeInstruction> analyzedInstructions = new LinkedList<>();
 
     /* Many Meals to Many "Various" DietPlans
-    * I.e. One "Meal" can be in various DietPlans */
+    * I.e. One "Recipe" can be in various DietPlans */
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.MERGE,CascadeType.PERSIST}
     )
     private final Set<DietPlan> dietPlans = new HashSet<>();
 
-    public Recipe(String name, RecipeType type) {
-        this.name = name;
-        this.type = type;
+    public Recipe(Builder builder) {
+        this.name = builder.name;
+        this.type = builder.type;
+        this.vegetarian = builder.vegetarian;
+        this.vegan = builder.vegan;
+        this.glutenFree = builder.glutenFree;
+        this.dairyFree = builder.dairyFree;
+        this.veryHealthy = builder.veryHealthy;
+        this.cheap = builder.cheap;
+        this.veryPopular = builder.veryPopular;
+        this.sustainable = builder.sustainable;
+        this.pricePerServing = builder.pricePerServing;
+        this.instructions = builder.instructions;
+        this.serving = builder.serving;
+        this.readyInMinutes = builder.readyInMinutes;
     }
 
     public Recipe() { }
 
-    /**
-     * Adding ingredients
-     */
+    @Accessors(fluent = true)
+    @Setter
+    public static class Builder{
+        private String name;
+        private String type;
+        private Boolean vegetarian;
+        private Boolean vegan;
+        private Boolean glutenFree;
+        private Boolean dairyFree;
+        private Boolean veryHealthy;
+        private Boolean cheap;
+        private Boolean veryPopular;
+        private Boolean sustainable;
+        private Double pricePerServing;
+        private String instructions;
+        private Integer serving;
+        private Integer readyInMinutes;
 
-    public Recipe addIngredient(FoodAttribute foodAttr){
-        ingredients.add(foodAttr);
-        foodAttr.setRecipe(this);
-        return this;
+        public Recipe build(){
+            return new Recipe(this);
+        }
     }
-
-    public Recipe removeIngredient(FoodAttribute foodAttr){
-        ingredients.remove(foodAttr);
-        foodAttr.setRecipe(null);
-        return this;
-    }
-
-    /**
-     * Adding instructions
-     */
 
     public Long instructionsSize(){
-        return (long) this.instructions.size();
+        return (long) this.analyzedInstructions.size();
     }
 
-    public Recipe addInstruction(MealInstruction mealInstruction){
-        mealInstruction.setMeal(this);
-        this.instructions.add(mealInstruction);
-        return this;
+    public void addInstruction(RecipeInstruction instruction, int number){
+        instruction.setRecipe(this);
+        instruction.setNumber(number);
+
+        this.analyzedInstructions.add(instruction);
     }
 
-    public Recipe removeInstruction(MealInstruction mealInstruction){
-        this.instructions.remove(mealInstruction);
-        mealInstruction.setMeal(null);
-        return this;
+    public void removeInstruction(RecipeInstruction instruction){
+        this.analyzedInstructions.remove(instruction);
+        instruction.setRecipe(null);
     }
+
+    public void addIngredient(Ingredient ingredient){
+        this.ingredients.add(ingredient);
+    }
+
+    public void removeIngredient(Ingredient ingredient){
+        ingredients.remove(ingredient);
+        ingredient.setRecipe(null);
+        ingredient.setFood(null);
+    }
+
 
     /**
-     * The Meal object uses the entity identifier for equality since it lacks a unique business key.
-     * We cannot hash the meal_id since when the object is being attached and persisted (states) it will be located
+     * The Recipe object uses the entity identifier for equality since it lacks a unique business key.
+     * We cannot hash the id since when the object is being attached and persisted (hibernate states) it will be located
      * in a different hashed bucket
      * We cannot use normal hashCode and equals either since
 
@@ -146,7 +181,7 @@ public class Recipe {
         if (this == o) return true;
         if (!(o instanceof Recipe)) return false;
         Recipe recipe = (Recipe) o;
-        return this.recipeId != null && this.recipeId.equals(recipe.getRecipeId());
+        return this.id != null && this.id.equals(recipe.getId());
     }
 
     @Override
@@ -154,7 +189,7 @@ public class Recipe {
         return getClass().hashCode();
     }
 
-    public Long getRecipeId() {
-        return recipeId;
+    public Long getId() {
+        return id;
     }
 }

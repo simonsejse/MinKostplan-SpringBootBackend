@@ -1,13 +1,9 @@
-package dk.minkostplan.backend;
+package dk.minkostplan.backend.linerunners;
 
-import dk.minkostplan.backend.entities.DietPlan;
 import dk.minkostplan.backend.entities.Food;
-import dk.minkostplan.backend.entities.User;
 import dk.minkostplan.backend.repository.FoodRepository;
 import dk.minkostplan.backend.repository.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,7 +14,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.Iterator;
 
 //@Component
 @Slf4j
