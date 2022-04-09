@@ -41,19 +41,18 @@ public class RecipeDTO {
     @JsonProperty(value="sustainable")
     private Boolean sustainable;
     @JsonProperty(value="pricePerServing")
-    private Double pricePerServing;
+    private float pricePerServing;
     @JsonProperty(value="instructions")
     private String instructions;
-    @JsonProperty(value="serving")
-    private Integer serving;
     @JsonProperty(value="readyInMinutes")
     private Integer readyInMinutes;
+    @JsonProperty("macros")
+    private MacroDTO macros;
+
     @JsonProperty(value="ingredients")
-    private final List<IngredientDTO> ingredients;
+    private List<IngredientDTO> ingredients;
     @JsonProperty(value="analyzedInstructions")
-    private final List<AnalysedInstructionDTO> analyzedInstructions;
-
-
+    private List<AnalysedInstructionDTO> analyzedInstructions;
 
     public RecipeDTO(Recipe recipe){
         this.id = recipe.getId();
@@ -69,15 +68,6 @@ public class RecipeDTO {
         this.sustainable = recipe.getSustainable();
         this.pricePerServing = recipe.getPricePerServing();
         this.instructions = recipe.getInstructions();
-        this.serving = recipe.getServing();
         this.readyInMinutes = recipe.getReadyInMinutes();
-        System.out.println(recipe.getIngredients().size());
-        this.ingredients = recipe.getIngredients().stream().map(in -> {
-            System.out.println(in);
-            return new IngredientDTO(in);
-        }).collect(Collectors.toList());
-        this.analyzedInstructions = recipe.getAnalyzedInstructions().stream().map(AnalysedInstructionDTO::new).collect(Collectors.toList());
-
-
     }
 }

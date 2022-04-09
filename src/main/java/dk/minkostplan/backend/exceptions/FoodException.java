@@ -1,4 +1,4 @@
-package dk.testproject.basketbackend.exceptions;
+package dk.minkostplan.backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 

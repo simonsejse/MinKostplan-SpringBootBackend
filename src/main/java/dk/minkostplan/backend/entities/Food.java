@@ -1,5 +1,6 @@
 package dk.minkostplan.backend.entities;
 
+import dk.minkostplan.backend.models.dtos.recipes.FoodDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
@@ -65,6 +66,18 @@ public class Food {
         this.fat = fat;
         this.addedSugars = addedSugars;
         this.fibers = fibers;
+    }
+
+    public Food(FoodDTO foodDTO){
+        this.foodType = foodDTO.getFoodType();
+        this.name = foodDTO.getName();
+        this.kj = foodDTO.getKj();
+        this.kcal = foodDTO.getKcal();
+        this.protein = foodDTO.getProtein();
+        this.carbs = foodDTO.getCarbs();
+        this.fat = foodDTO.getFat();
+        this.addedSugars = foodDTO.getAddedSugars();
+        this.fibers = foodDTO.getFibers();
     }
 
     protected Food(){}

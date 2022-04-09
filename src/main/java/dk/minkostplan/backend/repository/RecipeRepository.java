@@ -1,17 +1,28 @@
 package dk.minkostplan.backend.repository;
 
 import dk.minkostplan.backend.entities.Recipe;
-import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    @Query("SELECT new dk.minkostplan.backend.models.dtos.recipes.RecipeDTO(recipe) from Recipe recipe where recipe.id = :id")
-    Optional<RecipeDTO> getRecipeDTOByRecipeId(Long id);
+    @Query("SELECT r FROM Recipe r " +
+            "JOIN FETCH r.ingredients ig " +
+            "JOIN FETCH r.macros " +
+            "INNER JOIN FETCH ig.food " +
+            "INNER JOIN FETCH ig.measure " +
+            "LEFT JOIN FETCH ig.meta " +
+            "WHERE r.id = :id")
+    Optional<Recipe> getRecipeFetchIngredients(Long id);
+
+    @Query("SELECT r FROM Recipe r " +
+            "JOIN FETCH r.analyzedInstructions a " +
+            "WHERE r = :recipe")
+    Recipe getRecipeFetchInstructions(Recipe recipe);
+
+
 
     @Modifying
     @Query("DELETE FROM Recipe r where r = :recipe")
@@ -22,6 +33,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     void deleteRecipeIngredients(Recipe recipe);
 
     @Modifying
-    @Query("DELETE FROM MealInstruction i WHERE i.recipe = :recipe")
+    @Query("DELETE FROM RecipeInstruction i WHERE i.recipe = :recipe")
     void deleteRecipeInstructions(Recipe recipe);
 }

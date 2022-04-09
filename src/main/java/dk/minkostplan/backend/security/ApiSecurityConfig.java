@@ -105,7 +105,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
                     .antMatchers(HttpMethod.DELETE, "/api/recipes/delete/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/v1/api/user").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api/foods").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/foods").permitAll()//.hasRoleAdmin
+                    .antMatchers(HttpMethod.POST, "/api/foods/new").permitAll()//.hasRoleAdmin
                     .antMatchers(HttpMethod.POST, "/api/diet-plans/create-diet-plan").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()

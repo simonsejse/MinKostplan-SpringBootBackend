@@ -3,12 +3,16 @@ package dk.minkostplan.backend.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity(name = "Ingredient")
 @Table(name = "ingredient")
 @Getter
+@Builder
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class Ingredient {
     @Id
@@ -43,8 +47,12 @@ public class Ingredient {
     @Column(name="instruction")
     private String instruction;
 
-    @Column(name="unit")
-    private String unit;
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    private Measurement measure;
 
     @ManyToMany(
             fetch = FetchType.LAZY
@@ -56,12 +64,11 @@ public class Ingredient {
     )
     private Set<Meta> meta = new HashSet<>();
 
-    public Ingredient(Food food, Recipe recipe, float amount, String instruction, String unit, Set<Meta> meta) {
+    public Ingredient(Food food, Recipe recipe, float amount, String instruction, Set<Meta> meta) {
         this.food = food;
         this.recipe = recipe;
         this.amount = amount;
         this.instruction = instruction;
-        this.unit = unit;
         this.meta = meta;
     }
 

@@ -13,6 +13,7 @@ import java.util.*;
 @Entity(name="Recipe")
 @Table(name="recipe")
 @Getter
+@Setter
 public class Recipe {
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -26,55 +27,60 @@ public class Recipe {
     @Id
     private Long id;
 
-    @Column(name="recipe_name")
+    @Column(name="recipeName", nullable = false)
     private String name;
 
-    @Column(name="recipe_type")
+    @Column(name="recipeType", nullable = false)
     private String type;
 
-    @Column(name="is_vegetarian", nullable = false)
+    @Column(name="isVegetarian", nullable = false)
     private Boolean vegetarian;
 
-    @Column(name="is_vegan", nullable = false)
+    @Column(name="isVegan", nullable = false)
     private Boolean vegan;
 
-    @Column(name="is_gluten_free", nullable = false)
+    @Column(name="isGlutenFree", nullable = false)
     private Boolean glutenFree;
 
-    @Column(name="is_dairy_free")
+    @Column(name="isDairyFree", nullable = false)
     private Boolean dairyFree;
 
-    @Column(name="is_very_healthy")
+    @Column(name="isVeryHealthy", nullable = false)
     private Boolean veryHealthy;
 
-    @Column(name="is_cheap")
+    @Column(name="isCheap", nullable = false)
     private Boolean cheap;
 
-    @Column(name="is_veryPopular")
+    @Column(name="isVeryPopular", nullable = false)
     private Boolean veryPopular;
 
-    @Column(name="is_sustainable")
+    @Column(name="isSustainable", nullable = false)
     private Boolean sustainable;
 
-    @Column(name="pricePerServing")
-    private Double pricePerServing;
+    @Column(name="pricePerServing", nullable = false)
+    private float pricePerServing;
 
-    @Column(name="instructionsHtml")
+    @Column(name="instructionsHtml", nullable = false, length = 500)
     private String instructions;
 
-    @Column(name="serving")
-    private Integer serving;
-
-    @Column(name="readyInMinutes")
+    @Column(name="readyInMinutes", nullable = false)
     private Integer readyInMinutes;
+
+    @Column(name="image", length = 64)
+    private String image;
+
+    @OneToOne(
+            fetch=FetchType.LAZY,
+            mappedBy="recipe",
+            cascade = CascadeType.ALL,
+            optional = false
+    )
+    private Macros macros;
 
     /* One Recipe to Many Food Attributes */
     @OneToMany(
             fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },
+            cascade = CascadeType.ALL,
             mappedBy= "recipe"
     )
     private final List<Ingredient> ingredients = new ArrayList<>();
@@ -108,7 +114,6 @@ public class Recipe {
         this.sustainable = builder.sustainable;
         this.pricePerServing = builder.pricePerServing;
         this.instructions = builder.instructions;
-        this.serving = builder.serving;
         this.readyInMinutes = builder.readyInMinutes;
     }
 
@@ -127,9 +132,8 @@ public class Recipe {
         private Boolean cheap;
         private Boolean veryPopular;
         private Boolean sustainable;
-        private Double pricePerServing;
+        private float pricePerServing;
         private String instructions;
-        private Integer serving;
         private Integer readyInMinutes;
 
         public Recipe build(){

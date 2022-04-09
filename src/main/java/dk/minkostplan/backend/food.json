@@ -1,0 +1,100 @@
+{
+   "vegetarian":false,
+   "vegan":false,
+   "type":"all",
+   "glutenFree":false,
+   "dairyFree":true,
+   "veryHealthy":true,
+   "cheap":false,
+   "veryPopular":false,
+   "sustainable":false,
+   "pricePerServing":50,
+   "name":"Kylling og ris med stegte grøntsager",
+   "readyInMinutes":10,
+   "instructions":"<ol> <li>Start med at sæt dine ris over.</li> <li>Du kan enten tilberede din kylling i ovnen eller på panden, det kan gøres i ovnen hvor inderfilet får ca. 6-7min på hver side på 190-200grader.</li> <li>Steg dine grøntsager på panden med kokosolien.</li></ol>",
+   "ingredients":[
+      {
+         "fk_food_id":688,
+         "amount":225.0,
+         "original":"Fyr inderfileten i ovnen ved 190-200 grader i 6-7 min hver side.",
+         "measures":{
+            "type":"GRAMS",
+            "amountOfType":225.0,
+            "amountInGrams":225.0
+         },
+         "meta":[
+
+         ]
+      },
+      {
+         "fk_food_id":119,
+         "amount":125.0,
+         "original":"I en gryde med ris og kog alt efter behov.",
+         "measures":{
+            "type":"GRAMS",
+            "amountOfType":125.0,
+            "amountInGrams":125.0
+         },
+         "meta":[
+
+         ]
+      },
+      {
+         "fk_food_id":37,
+         "amount":95.0,
+         "original":"Skær peberfrugten ud i ønskede form, og fyr i en gryde.",
+         "measures":{
+            "type":"PIECES",
+            "amountOfType":0.5,
+            "amountInGrams":95.0
+         },
+         "meta":[
+            "skåret"
+         ]
+      },
+      {
+         "fk_food_id":16,
+         "amount":95.0,
+         "original":"Skær broccolien ud i ønskede form, og fyr i en gryde.",
+         "measures":{
+            "type":"GRAMS",
+            "amountOfType":95.0,
+            "amountInGrams":95.0
+         },
+         "meta":[
+            "skåret"
+         ]
+      },
+      {
+         "fk_food_id":1042,
+         "amount":10.0,
+         "original":"Tilsæt kokosolien til gryden med peberfrugt og broccoli.",
+         "measures":{
+            "type":"TSP",
+            "amountOfType":1,
+            "amountInGrams":10.0
+         },
+         "meta":[
+
+         ]
+      }
+   ],
+   "analyzedInstructions":[
+      {
+         "number":1,
+         "step":"Start med at sæt dine ris over."
+      },
+      {
+         "number":2,
+         "step":"Tilbered din kylling enten på ovn eller pande. Hvis ovn giv den 6-7 min på hver side (190-200 grader)"
+      },
+      {
+         "number":3,
+         "step":"Steg dine grøntsager på panden med kokosolien."
+      },
+      {
+         "number":4,
+         "step":"Bland det hele sammen! Og nyd din mad!"
+      }
+   ]
+}

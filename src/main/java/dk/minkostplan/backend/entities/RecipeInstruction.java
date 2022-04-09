@@ -7,8 +7,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity(name="MealInstruction")
-@Table(name="meal_instructions")
+@Entity(name="RecipeInstruction")
+@Table(name="recipe_instructions")
 @Getter
 @Setter
 public class RecipeInstruction implements Comparable<RecipeInstruction>{
