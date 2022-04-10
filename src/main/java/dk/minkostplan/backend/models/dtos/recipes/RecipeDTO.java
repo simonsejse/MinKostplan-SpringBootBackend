@@ -50,6 +50,8 @@ public class RecipeDTO {
     private String instructions;
     @JsonProperty(value="readyInMinutes")
     private Integer readyInMinutes;
+    @JsonProperty(value="image")
+    private String image;
     @JsonProperty("macros")
     private MacroDTO macros;
     @JsonProperty(value="ingredients")
@@ -73,5 +75,6 @@ public class RecipeDTO {
         this.pricePerServing = recipe.getPricePerServing();
         this.instructions = recipe.getInstructions();
         this.readyInMinutes = recipe.getReadyInMinutes();
+        this.image = recipe.getImage();
     }
 }

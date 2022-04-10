@@ -7,7 +7,6 @@ import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.exceptions.RecipeException;
 import dk.minkostplan.backend.models.MeasureType;
 import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
-import dk.minkostplan.backend.payload.request.NutritionalValuesRequest;
 import dk.minkostplan.backend.payload.request.recipe.IngredientRequest;
 import dk.minkostplan.backend.payload.request.recipe.MeasureRequest;
 import dk.minkostplan.backend.payload.request.recipe.RecipeRequest;
@@ -17,12 +16,14 @@ import dk.minkostplan.backend.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
 import java.util.*;
 
+@Validated
 @RestController
 @RequestMapping("api/recipes")
 public class RecipeController {
@@ -45,9 +46,9 @@ public class RecipeController {
     @GetMapping("/{id}")
     public @ResponseBody ResponseEntity<RecipeDTO> getRecipeById(
             @PathVariable("id") long id,
-            @Valid NutritionalValuesRequest nutrition) throws RecipeException {
-        System.out.println(nutrition.toString());
-        RecipeDTO recipeDTOById = recipeService.getRecipeDTOById(id, nutrition);
+            @RequestParam(required = false) @Min(value=50, message = "Kalorier kan ikke være under 10!") Float calories
+    ) throws RecipeException {
+        RecipeDTO recipeDTOById = recipeService.getRecipeDTOById(id, calories);
         return new ResponseEntity<>(recipeDTOById, HttpStatus.OK);
     }
 

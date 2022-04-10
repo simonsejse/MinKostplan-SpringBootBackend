@@ -2,8 +2,9 @@ package dk.minkostplan.backend.models.dtos.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.minkostplan.backend.entities.Macros;
-import dk.minkostplan.backend.payload.request.NutritionalValuesRequest;
 import lombok.Data;
+
+import java.util.Optional;
 
 @Data
 public class MacroDTO {
@@ -12,24 +13,27 @@ public class MacroDTO {
     @JsonProperty("wanted")
     private MacroDistributionDTO wanted;
 
-    public MacroDTO(Macros macros, NutritionalValuesRequest nutritionalValuesRequest){
+    public MacroDTO(Macros macros, Optional<Float> calories){
+        final Float defaultCalories = macros.getCalories();
+
         this.normal = new MacroDistributionDTO.Builder()
-                .calories(macros.getCalories())
+                .calories(defaultCalories)
                 .protein(macros.getProtein())
                 .fat(macros.getFat())
                 .carbs(macros.getCarbs())
                 .build();
 
-        Float wantedCalories = nutritionalValuesRequest.getCalories();
-        Float wantedProtein = nutritionalValuesRequest.getProtein();
-        Float wantedFat = nutritionalValuesRequest.getFat();
-        Float wantedCarbs = nutritionalValuesRequest.getCarbs();
+
+        float wantedCalories = calories.orElse(defaultCalories);
+        float wantedProtein = macros.getProtein() * (wantedCalories / defaultCalories);
+        float wantedFat = macros.getFat() * (wantedCalories / defaultCalories);
+        float wantedCarbs = macros.getCarbs() * (wantedCalories / defaultCalories);
 
         this.wanted = new MacroDistributionDTO.Builder()
-                .calories(wantedCalories != null ? wantedCalories : macros.getCalories())
-                .protein(wantedProtein != null ? wantedProtein : macros.getProtein())
-                .fat(wantedFat != null ? wantedFat : macros.getFat())
-                .carbs(wantedCarbs != null ? wantedCarbs : macros.getCarbs())
+                .calories(wantedCalories)
+                .protein(wantedProtein)
+                .fat(wantedFat)
+                .carbs(wantedCarbs)
                 .build();
     }
 }

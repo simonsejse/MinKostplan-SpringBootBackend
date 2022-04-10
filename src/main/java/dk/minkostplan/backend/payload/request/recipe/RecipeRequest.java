@@ -17,7 +17,6 @@ public class RecipeRequest {
     @NotNull(message = "Du mangler navn feltet!")
     private String name;
     @NotNull(message = "Du mangler rettens type feltet!")
-   // @IsValidRecipeType
     private RecipeType type;
     @NotNull(message = "Du mangler vegetarisk feltet!")
     private Boolean vegetarian;

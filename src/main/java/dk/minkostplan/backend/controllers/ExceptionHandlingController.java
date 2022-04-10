@@ -28,9 +28,14 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -99,5 +104,11 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
     @ExceptionHandler(MetaException.class)
     public ResponseEntity<Object> handleMetaException(final HttpServletRequest request, MetaException exception){
         return createResponseEntity(exception.getStatus(), exception.getMessage(), request.getServletPath());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintException(final HttpServletRequest request, ConstraintViolationException exception){
+        final List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(exception.getConstraintViolations());
+        return createResponseEntity(HttpStatus.BAD_REQUEST, constraintViolations.get(0).getMessage(), request.getServletPath());
     }
 }

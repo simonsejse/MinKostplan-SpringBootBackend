@@ -4,13 +4,13 @@ import dk.minkostplan.backend.entities.Meta;
 import dk.minkostplan.backend.entities.Recipe;
 import dk.minkostplan.backend.exceptions.RecipeException;
 import dk.minkostplan.backend.models.dtos.recipes.*;
-import dk.minkostplan.backend.payload.request.NutritionalValuesRequest;
 import dk.minkostplan.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +32,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDTO getRecipeDTOById(long id, NutritionalValuesRequest nutritionalValuesRequest) throws RecipeException {
+    public RecipeDTO getRecipeDTOById(long id, @Min(value = 10, message = "Kalorier kan ikke være under 10!") Float calories) throws RecipeException {
         Recipe recipe = recipeRepository.getRecipeFetchIngredients(id).orElseThrow(() ->
                 new RecipeException(String.format("Der findes ikke et måltid med ID %d!", id), HttpStatus.NOT_FOUND)
         );
@@ -41,7 +41,7 @@ public class RecipeService {
 
         RecipeDTO recipeDTO = new RecipeDTO(recipe);
 
-        recipeDTO.setMacros(new MacroDTO(recipe.getMacros(), nutritionalValuesRequest));
+        recipeDTO.setMacros(new MacroDTO(recipe.getMacros(), Optional.ofNullable(calories)));
 
         MacroDTO macros = recipeDTO.getMacros();
         float ratio = macros.getWanted().getCalories() / macros.getNormal().getCalories();
