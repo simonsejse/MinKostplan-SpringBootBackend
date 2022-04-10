@@ -54,7 +54,7 @@ public class Food {
             cascade = {CascadeType.ALL},
             mappedBy="food"
     )
-    public Set<Ingredient> ingredients = new HashSet<>();
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     public Food(String foodType, String name, float kj, float kcal, float protein, float carbs, float fat, float addedSugars, float fibers) {
         this.foodType = foodType;
