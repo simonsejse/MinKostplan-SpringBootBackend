@@ -16,7 +16,7 @@
       {
          "fk_food_id":688,
          "amount":225.0,
-         "original":"Fyr inderfileten i ovnen ved 190-200 grader i 6-7 min hver side.",
+         "instruction":"Fyr inderfileten i ovnen ved 190-200 grader i 6-7 min hver side.",
          "measures":{
             "type":"GRAMS",
             "amountOfType":225.0,
@@ -29,7 +29,7 @@
       {
          "fk_food_id":119,
          "amount":125.0,
-         "original":"I en gryde med ris og kog alt efter behov.",
+         "instruction":"I en gryde med ris og kog alt efter behov.",
          "measures":{
             "type":"GRAMS",
             "amountOfType":125.0,
@@ -42,7 +42,7 @@
       {
          "fk_food_id":37,
          "amount":95.0,
-         "original":"Skær peberfrugten ud i ønskede form, og fyr i en gryde.",
+         "instruction":"Skær peberfrugten ud i ønskede form, og fyr i en gryde.",
          "measures":{
             "type":"PIECES",
             "amountOfType":0.5,
@@ -55,7 +55,7 @@
       {
          "fk_food_id":16,
          "amount":95.0,
-         "original":"Skær broccolien ud i ønskede form, og fyr i en gryde.",
+         "instruction":"Skær broccolien ud i ønskede form, og fyr i en gryde.",
          "measures":{
             "type":"GRAMS",
             "amountOfType":95.0,
@@ -68,7 +68,7 @@
       {
          "fk_food_id":1042,
          "amount":10.0,
-         "original":"Tilsæt kokosolien til gryden med peberfrugt og broccoli.",
+         "instruction":"Tilsæt kokosolien til gryden med peberfrugt og broccoli.",
          "measures":{
             "type":"TSP",
             "amountOfType":1,

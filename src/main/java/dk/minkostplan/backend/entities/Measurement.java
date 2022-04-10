@@ -20,11 +20,11 @@ public class Measurement {
     @Column(name = "id", nullable = false)
     private Long id;
     @Enumerated(EnumType.STRING)
-    @Column(name="measure_type")
+    @Column(name="measureType", nullable = false)
     private MeasureType type;
-    @Column(name="amount_of_type")
+    @Column(name="amountOfType", nullable = false)
     private float amountOfType;
-    @Column(name="amount_in_grams")
+    @Column(name="amountInGrams", nullable = false)
     private float amountInGrams;
 
     public Long getId() {

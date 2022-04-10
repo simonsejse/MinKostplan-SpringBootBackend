@@ -39,7 +39,6 @@
         </dependency>
 
 
-
         <!-- CONNECTOR https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>

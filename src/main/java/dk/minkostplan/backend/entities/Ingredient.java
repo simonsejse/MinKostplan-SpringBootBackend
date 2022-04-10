@@ -1,5 +1,6 @@
 package dk.minkostplan.backend.entities;
 
+import dk.minkostplan.backend.payload.request.recipe.IngredientRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -64,11 +65,11 @@ public class Ingredient {
     )
     private Set<Meta> meta = new HashSet<>();
 
-    public Ingredient(Food food, Recipe recipe, float amount, String instruction, Set<Meta> meta) {
+    public Ingredient(Food food, float amount, String instruction, Measurement measure, Set<Meta> meta) {
         this.food = food;
-        this.recipe = recipe;
         this.amount = amount;
         this.instruction = instruction;
+        this.measure = measure;
         this.meta = meta;
     }
 
