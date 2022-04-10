@@ -1,6 +1,8 @@
 package dk.minkostplan.backend.entities;
 
 
+import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.models.RecipeType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -30,8 +32,13 @@ public class Recipe {
     @Column(name="recipeName", nullable = false)
     private String name;
 
+    @Column(name="recipeApproval", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RecipeApproval approval;
+
+    @Enumerated(value = EnumType.STRING)
     @Column(name="recipeType", nullable = false)
-    private String type;
+    private RecipeType type;
 
     @Column(name="isVegetarian", nullable = false)
     private Boolean vegetarian;
@@ -115,6 +122,8 @@ public class Recipe {
         this.pricePerServing = builder.pricePerServing;
         this.instructions = builder.instructions;
         this.readyInMinutes = builder.readyInMinutes;
+        this.image = builder.image;
+        this.approval = RecipeApproval.ACCEPTED;
     }
 
     public Recipe() { }
@@ -123,7 +132,7 @@ public class Recipe {
     @Setter
     public static class Builder{
         private String name;
-        private String type;
+        private RecipeType type;
         private Boolean vegetarian;
         private Boolean vegan;
         private Boolean glutenFree;
@@ -135,6 +144,7 @@ public class Recipe {
         private float pricePerServing;
         private String instructions;
         private Integer readyInMinutes;
+        private String image;
 
         public Recipe build(){
             return new Recipe(this);
@@ -145,10 +155,8 @@ public class Recipe {
         return (long) this.analyzedInstructions.size();
     }
 
-    public void addInstruction(RecipeInstruction instruction, int number){
+    public void addInstruction(RecipeInstruction instruction){
         instruction.setRecipe(this);
-        instruction.setNumber(number);
-
         this.analyzedInstructions.add(instruction);
     }
 
@@ -158,6 +166,7 @@ public class Recipe {
     }
 
     public void addIngredient(Ingredient ingredient){
+        ingredient.setRecipe(this);
         this.ingredients.add(ingredient);
     }
 
@@ -167,6 +176,11 @@ public class Recipe {
         ingredient.setFood(null);
     }
 
+
+    public void setMacros(Macros macros) {
+        macros.setRecipe(this);
+        this.macros = macros;
+    }
 
     /**
      * The Recipe object uses the entity identifier for equality since it lacks a unique business key.

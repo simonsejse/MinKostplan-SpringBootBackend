@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.minkostplan.backend.entities.Ingredient;
 import dk.minkostplan.backend.entities.Recipe;
 import dk.minkostplan.backend.entities.RecipeInstruction;
+import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.models.RecipeType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SortNatural;
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class RecipeDTO {
-    @JsonProperty(value="mealId")
+    @JsonProperty(value="recipeId")
     private long id;
-    @JsonProperty(value="mealName")
+    @JsonProperty(value="recipeName")
     private String name;
-    @JsonProperty(value="mealType")
-    private String mealType;
+    @JsonProperty(value="recipeApproval")
+    private RecipeApproval recipeApproval;
+    @JsonProperty(value="recipeType")
+    private RecipeType recipeType;
     @JsonProperty(value="vegetarian")
     private Boolean vegetarian;
     @JsonProperty(value="vegan")
@@ -48,7 +52,6 @@ public class RecipeDTO {
     private Integer readyInMinutes;
     @JsonProperty("macros")
     private MacroDTO macros;
-
     @JsonProperty(value="ingredients")
     private List<IngredientDTO> ingredients;
     @JsonProperty(value="analyzedInstructions")
@@ -57,7 +60,8 @@ public class RecipeDTO {
     public RecipeDTO(Recipe recipe){
         this.id = recipe.getId();
         this.name = recipe.getName();
-        this.mealType = recipe.getType();
+        this.recipeApproval = recipe.getApproval();
+        this.recipeType = recipe.getType();
         this.vegetarian = recipe.getVegetarian();
         this.vegan = recipe.getVegan();
         this.glutenFree = recipe.getGlutenFree();

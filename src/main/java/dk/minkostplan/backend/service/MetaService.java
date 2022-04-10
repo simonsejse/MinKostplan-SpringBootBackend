@@ -24,4 +24,8 @@ public class MetaService {
                         () -> new MetaException(HttpStatus.NOT_FOUND, String.format("`%s` findes ikke som meta data til maden!", metaName))
         );
     }
+
+    public boolean doesMetaExists(String meta) {
+        return metaRepository.existsByMeta(meta);
+    }
 }

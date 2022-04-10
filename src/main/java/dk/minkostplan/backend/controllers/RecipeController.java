@@ -1,24 +1,26 @@
 package dk.minkostplan.backend.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.minkostplan.backend.entities.*;
+import dk.minkostplan.backend.exceptions.FoodException;
 import dk.minkostplan.backend.exceptions.MetaException;
-import dk.minkostplan.backend.models.MeasureType;
-import dk.minkostplan.backend.payload.request.NutritionalValuesRequest;
-import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
 import dk.minkostplan.backend.exceptions.RecipeException;
+import dk.minkostplan.backend.models.MeasureType;
+import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
+import dk.minkostplan.backend.payload.request.NutritionalValuesRequest;
+import dk.minkostplan.backend.payload.request.recipe.IngredientRequest;
+import dk.minkostplan.backend.payload.request.recipe.MeasureRequest;
+import dk.minkostplan.backend.payload.request.recipe.RecipeRequest;
 import dk.minkostplan.backend.service.FoodService;
 import dk.minkostplan.backend.service.MetaService;
 import dk.minkostplan.backend.service.RecipeService;
-import dk.minkostplan.backend.exceptions.FoodException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @RestController
@@ -40,7 +42,6 @@ public class RecipeController {
     }
 
     @CrossOrigin("http://localhost:3000/")
-
     @GetMapping("/{id}")
     public @ResponseBody ResponseEntity<RecipeDTO> getRecipeById(
             @PathVariable("id") long id,
@@ -64,93 +65,77 @@ public class RecipeController {
 
 
     @PostMapping("/new")
-    public ResponseEntity<Map<String, String>> createNewRecipe(@RequestBody Map<String, Object> test)
-            throws RecipeException, JsonProcessingException, MetaException, FoodException {
+    public @ResponseBody ResponseEntity<Object> createNewRecipe(
+            @Valid @RequestBody RecipeRequest recipe
+    ) throws RecipeException, MetaException, FoodException {
 
-        JsonNode root = objectMapper.readTree(objectMapper.writeValueAsString(test));
+
+
         float calories = 0f, protein = 0f, fat = 0f, carbs = 0f;
+
         Recipe newRecipe = new Recipe.Builder()
-                .vegetarian(root.get("vegetarian").asBoolean())
-                .vegan(root.get("vegan").asBoolean())
-                .type(root.get("type").asText())
-                .glutenFree(root.get("glutenFree").asBoolean())
-                .dairyFree(root.get("dairyFree").asBoolean())
-                .veryHealthy(root.get("veryHealthy").asBoolean())
-                .cheap(root.get("cheap").asBoolean())
-                .veryPopular(root.get("veryPopular").asBoolean())
-                .sustainable(root.get("sustainable").asBoolean())
-                .pricePerServing((float) root.get("pricePerServing").asDouble())
-                .name(root.get("name").asText())
-                .readyInMinutes(root.get("readyInMinutes").asInt())
-                .instructions(root.get("instructions").asText())
+                .vegetarian(recipe.getVegetarian())
+                .vegan(recipe.getVegan())
+                .type(recipe.getType())
+                .glutenFree(recipe.getGlutenFree())
+                .dairyFree(recipe.getDairyFree())
+                .veryHealthy(recipe.getVeryHealthy())
+                .cheap(recipe.getCheap())
+                .veryPopular(recipe.getVeryPopular())
+                .sustainable(recipe.getSustainable())
+                .pricePerServing(recipe.getPricePerServing())
+                .name(recipe.getName())
+                .readyInMinutes(recipe.getReadyInMinutes())
+                .instructions(recipe.getInstructions())
+                .image(recipe.getImage())
                 .build();
 
-        JsonNode instructions = root.get("analyzedInstructions");
+        for(IngredientRequest ingredient : recipe.getIngredients()){
+            Food food = foodService.getFoodById(ingredient.getFoodId());
 
-        for(JsonNode instruction : instructions){
-            int number = instruction.get("number").asInt();
-            String step = instruction.get("step").asText();
-            newRecipe.addInstruction(new RecipeInstruction(number, step), number);
-        }
+            MeasureRequest measures = ingredient.getMeasures();
+            MeasureType measureType = measures.getType();
+            float amountInGrams = measures.getAmountInGrams();
+            float amountOfType = measures.getAmountOfType();
 
-        JsonNode ingredients = root.get("ingredients");
-
-
-
-        for(JsonNode ingredient : ingredients){
-            Food food = foodService.getFoodById(ingredient.get("fk_food_id").asInt());
-
-            String original = ingredient.get("original").asText();
-            double amount = ingredient.get("amount").asDouble();
-            JsonNode measuresNode = ingredient.get("measures");
-            MeasureType type = MeasureType.valueOf(measuresNode.get("type").asText());
-            float amountOfType = (float) measuresNode.get("amountOfType").asDouble();
-            float amountInGrams = (float) measuresNode.get("amountInGrams").asDouble();
+            Measurement measurement = Measurement.builder()
+                    .type(measureType)
+                    .amountInGrams(amountInGrams)
+                    .amountOfType(amountOfType)
+                    .build();
 
             calories += amountInGrams * (food.getKcal() / 100);
             protein += amountInGrams * (food.getProtein() / 100);
             fat += amountInGrams * (food.getFat() / 100);
             carbs += amountInGrams * (food.getCarbs() / 100);
 
-            JsonNode metasNode = ingredient.get("meta");
-
             Set<Meta> metas = new HashSet<>();
-            for(JsonNode metaNode : metasNode){
-                Meta meta = metaService.getMeta(metaNode.asText());
+            for(String metaName : ingredient.getMeta()){
+                Meta meta = metaService.getMeta(metaName);
                 metas.add(meta);
             }
 
             Ingredient recipe_ingredient = Ingredient.builder()
                     .food(food)
                     .recipe(newRecipe)
-                    .amount((float) amount)
-                    .instruction(original)
+                    .amount(ingredient.getAmount())
+                    .instruction(ingredient.getInstruction())
+                    .measure(measurement)
                     .meta(metas)
                     .build();
 
-            Measurement measurement = Measurement
-                    .builder()
-                    .type(type)
-                    .amountInGrams(amountInGrams)
-                    .amountOfType(amountOfType)
-                    .build();
-
-            recipe_ingredient.setMeasure(measurement);
-
-            Macros macros = new Macros(calories, protein, fat, carbs);
-            macros.setRecipe(newRecipe);
-
-            newRecipe.setMacros(macros);
-
             newRecipe.addIngredient(recipe_ingredient);
         }
+        recipe.getAnalyzedInstructions().stream().map(RecipeInstruction::new).forEach(newRecipe::addInstruction);
+
+
+        Macros macros = new Macros(calories, protein, fat, carbs);
+        newRecipe.setMacros(macros);
 
         recipeService.createRecipe(newRecipe);
 
-
-
-
         Map<String, String> message = Map.of("message", "opskrift oprettet!", "recipe_id", String.valueOf(newRecipe.getId()));
         return new ResponseEntity<>(message, HttpStatus.OK);
+
     }
 }

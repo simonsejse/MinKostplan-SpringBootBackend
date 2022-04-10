@@ -13,4 +13,5 @@ import java.util.Set;
 @Repository
 public interface MetaRepository extends JpaRepository<Meta, Long> {
     Optional<Meta> findByMeta(String meta);
+    boolean existsByMeta(String meta);
 }
