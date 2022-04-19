@@ -31,7 +31,7 @@ public class HandleAuthenticationFailure implements AuthenticationFailureHandler
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_BAD_REQUEST);
         body.put("error", "Unauthorized");
-        body.put("message", exception.getMessage());
+        body.put("message", "Du har indtastet forkert brugernavn eller password. Prøv igen.");
         body.put("path", request.getServletPath());
 
         mapper.writeValue(response.getOutputStream(), body);

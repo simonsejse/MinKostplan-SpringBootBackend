@@ -1,11 +1,13 @@
 package dk.minkostplan.backend.entities;
 
-import dk.minkostplan.backend.models.Role;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -30,9 +32,18 @@ public class User {
     @Column(name = "user_pw")
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", length = 20)
-    private Role role;
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
+    @JoinTable(
+            joinColumns = {@JoinColumn(name="user_id")},
+            inverseJoinColumns = {@JoinColumn(name="role_id")}
+    )
+    private Set<Role> roles = new HashSet<>();
 
     /* One User Can Have Many DietPlans */
     @OneToMany(
@@ -41,8 +52,16 @@ public class User {
             orphanRemoval = true,
             mappedBy="user"
     )
-    private List<DietPlan> dietPlans;
+    private List<DietPlan> dietPlans = new ArrayList<>();
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
+    private List<Ticket> tickets = new ArrayList<>();
 
     @Column(name = "account_enabled")
     private boolean accountEnabled;
@@ -53,11 +72,16 @@ public class User {
     @Column(name = "account_expired")
     private boolean accountExpired;
 
-    public User(String username, String email, String password) {
+    public void createNewTicket(Ticket ticket){
+        ticket.setSubmittedBy(this);
+        this.tickets.add(ticket);
+    }
+
+    public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = Role.ROLE_USER;
+        this.roles.add(role);
         this.accountEnabled = true;
         this.credentialsExpired = false;
         this.accountLocked = false;

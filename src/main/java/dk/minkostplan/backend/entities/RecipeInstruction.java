@@ -1,7 +1,6 @@
 package dk.minkostplan.backend.entities;
 
-import dk.minkostplan.backend.payload.request.recipe.InstructionRequest;
-import lombok.AllArgsConstructor;
+import dk.minkostplan.backend.payload.request.recipe.InstructionCreateRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +41,7 @@ public class RecipeInstruction implements Comparable<RecipeInstruction>{
         this.step = step;
     }
 
-    public RecipeInstruction(InstructionRequest request){
+    public RecipeInstruction(InstructionCreateRequest request){
         this(request.getNumber(), request.getStep());
     }
 

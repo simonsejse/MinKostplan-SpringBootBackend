@@ -1,6 +1,5 @@
 package dk.minkostplan.backend.entities;
 
-import dk.minkostplan.backend.payload.request.recipe.IngredientRequest;
 import lombok.*;
 
 import javax.persistence.*;

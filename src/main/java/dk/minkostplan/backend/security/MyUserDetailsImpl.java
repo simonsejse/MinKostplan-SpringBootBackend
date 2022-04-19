@@ -1,11 +1,13 @@
 package dk.minkostplan.backend.security;
 
+import dk.minkostplan.backend.entities.Role;
 import dk.minkostplan.backend.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class MyUserDetailsImpl implements org.springframework.security.core.userdetails.UserDetails {
 
@@ -24,7 +26,11 @@ public class MyUserDetailsImpl implements org.springframework.security.core.user
         this.isAccountLocked = user.isAccountLocked();
         this.isCredentialsExpired = user.isCredentialsExpired();
         this.isEnabled = user.isAccountEnabled();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        this.authorities = user.getRoles()
+                .stream()
+                .map(Role::getName)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @Override

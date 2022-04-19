@@ -5,3 +5,7 @@ MySQL --- fetch ---> Hibernate Persistence Context -----> DTOs
     *  Will join on Ingredient but also the FETCH means they will be put in the HPC (Hibernate Peristence Context)
     *  Without the FETCH they are not added to the context and only r is (so the ingredients are proxies)
 
+
+
+
+

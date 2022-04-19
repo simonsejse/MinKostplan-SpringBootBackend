@@ -6,22 +6,29 @@ import dk.minkostplan.backend.exceptions.FoodException;
 import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.exceptions.RecipeException;
 import dk.minkostplan.backend.models.MeasureType;
+import dk.minkostplan.backend.models.RecipeType;
 import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
-import dk.minkostplan.backend.payload.request.recipe.IngredientRequest;
-import dk.minkostplan.backend.payload.request.recipe.MeasureRequest;
-import dk.minkostplan.backend.payload.request.recipe.RecipeRequest;
+import dk.minkostplan.backend.payload.request.recipe.IngredientCreateRequest;
+import dk.minkostplan.backend.payload.request.recipe.MeasureCreateRequest;
+import dk.minkostplan.backend.payload.request.recipe.RecipeCreateRequest;
 import dk.minkostplan.backend.service.FoodService;
 import dk.minkostplan.backend.service.MetaService;
 import dk.minkostplan.backend.service.RecipeService;
+import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -41,6 +48,16 @@ public class RecipeController {
         this.objectMapper = objectMapper;
         this.foodService = foodService;
     }
+
+    @CrossOrigin("http://localhost:3000/")
+    @GetMapping("/categories")
+    public @ResponseBody ResponseEntity<List<String>> getRecipeCategories(){
+        List<String> recipeCategories = Arrays.stream(RecipeType.values())
+                .map(RecipeType::name)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(recipeCategories);
+    }
+
 
     @CrossOrigin("http://localhost:3000/")
     @GetMapping("/{id}")
@@ -67,7 +84,7 @@ public class RecipeController {
 
     @PostMapping("/new")
     public @ResponseBody ResponseEntity<Object> createNewRecipe(
-            @Valid @RequestBody RecipeRequest recipe
+            @Valid @RequestBody RecipeCreateRequest recipe
     ) throws RecipeException, MetaException, FoodException {
 
 
@@ -91,10 +108,10 @@ public class RecipeController {
                 .image(recipe.getImage())
                 .build();
 
-        for(IngredientRequest ingredient : recipe.getIngredients()){
+        for(IngredientCreateRequest ingredient : recipe.getIngredients()){
             Food food = foodService.getFoodById(ingredient.getFoodId());
 
-            MeasureRequest measures = ingredient.getMeasures();
+            MeasureCreateRequest measures = ingredient.getMeasures();
             MeasureType measureType = measures.getType();
             float amountInGrams = measures.getAmountInGrams();
             float amountOfType = measures.getAmountOfType();

@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
-public class RecipeRequest {
+public class RecipeCreateRequest {
     @Size(min = 3, max = 72, message = "Navn på din ret kan være mellem 3-72 characters.")
     @NotBlank(message = "Navnet på din ret kan ikke være blank!")
     @NotNull(message = "Du mangler navn feltet!")
@@ -44,8 +44,8 @@ public class RecipeRequest {
     private String image;
     @NotEmpty(message = "Ingredienserne kan ikke være tom!")
     @NotNull(message = "Du mangler ingrediserne feltet!")
-    private List<@Valid IngredientRequest> ingredients;
+    private List<@Valid IngredientCreateRequest> ingredients;
     @NotEmpty(message = "Ingredienserne kan ikke være tom!")
     @NotNull(message = "Du mangler instrukser feltet!")
-    private List<@Valid InstructionRequest> analyzedInstructions;
+    private List<@Valid InstructionCreateRequest> analyzedInstructions;
 }

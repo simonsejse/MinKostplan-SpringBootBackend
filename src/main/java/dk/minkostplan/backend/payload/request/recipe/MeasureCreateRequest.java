@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Data
-public class MeasureRequest {
+public class MeasureCreateRequest {
     @NotNull(message = "type feltet kan ikke være tomt!")
     private MeasureType type;
     @NotNull(message = "amountOfType feltet kan ikke være tomt!")

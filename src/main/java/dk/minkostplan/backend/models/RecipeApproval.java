@@ -1,7 +1,6 @@
 package dk.minkostplan.backend.models;
 
 public enum RecipeApproval {
-    DENIED,
-    AWAITING,
+    AWAITING_CONFIRMATION,
     ACCEPTED
 }

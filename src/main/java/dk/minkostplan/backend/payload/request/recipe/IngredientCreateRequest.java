@@ -1,7 +1,6 @@
 package dk.minkostplan.backend.payload.request.recipe;
 
 import dk.minkostplan.backend.constraints.MetaExist;
-import dk.minkostplan.backend.entities.Meta;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -11,7 +10,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Data
-public class IngredientRequest {
+public class IngredientCreateRequest {
     @NotNull(message = "foodId feltet kan ikke være tomt!")
     @PositiveOrZero(message = "Der er intet food ID under 0!")
     private Integer foodId;
@@ -22,7 +21,7 @@ public class IngredientRequest {
     @NotBlank(message = "instruction kan ikke være blank!")
     private String instruction;
     @NotNull(message = "Dit measure kan ikke være null")
-    private @Valid MeasureRequest measures;
+    private @Valid MeasureCreateRequest measures;
     @NotNull(message = "metas feltet kan ikke være tomt!")
     private @MetaExist List<String> meta;
 }

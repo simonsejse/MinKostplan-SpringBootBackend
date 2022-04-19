@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -38,6 +39,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(1)
 public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     private final Logger log = Logger.getLogger(ApiSecurityConfig.class.getName());
@@ -97,18 +99,20 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
-                /*Don't need this since it's only for api so i don't need a filter for username
-                 .addFilterBefore(jsonUsernamePasswordAuthFilter(), UsernamePasswordAuthenticationFilter.class)*/
                 .authorizeRequests()
-                    .expressionHandler(webExpressionHandler())
-                    .antMatchers(HttpMethod.POST, "/api/recipes/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
+                    /* Recipe Controller */
+                    .antMatchers(HttpMethod.GET, "/api/recipes/categories").hasAnyRole("USER", "ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/recipes/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.DELETE, "/api/recipes/delete/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/v1/api/user").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api/foods").permitAll()//.hasRoleAdmin
-                    .antMatchers(HttpMethod.POST, "/api/foods/new").permitAll()//.hasRoleAdmin
+                    /* Ticket Controller */
+                    .antMatchers(HttpMethod.POST, "/api/tickets/new").authenticated()
+                    /* User Controller */
+                    .antMatchers(HttpMethod.GET, "/api/user").hasAnyRole("USER", "ADMIN")
+                    /* Food Controller */
+                    .antMatchers(HttpMethod.GET, "/api/foods/").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/foods/new").hasRole("ADMIN")
+                    /* DietPlan controller */
                     .antMatchers(HttpMethod.POST, "/api/diet-plans/create-diet-plan").hasRole("USER")
-                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(rememberMeAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .exceptionHandling()
@@ -120,42 +124,12 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
                         body.put("timestamp", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
                         body.put("error", "Unauthorized");
-                        //authException.getMessage()
-                        body.put("message", "Du har ikke tilladdelse til den her del af APIen!");
+                        body.put("message", "Du er ikke logget ind!");
                         body.put("path", request.getServletPath());
                         mapper.writeValue(response.getOutputStream(), body);
                     });
     }
-    /**
-     * Role hierarchy
-     */
-    @Bean
-    public SecurityExpressionHandler<FilterInvocation> webExpressionHandler(){
-        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy());
-        return expressionHandler;
-    }
 
-    @Bean
-    public RoleHierarchy roleHierarchy(){
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = "ROLE_ADMIN > ROLE_MODERATOR \n " +
-                "ROLE_MODERATOR > ROLE_VIP_UNLIMITED \n " +
-                "ROLE_VIP_UNLIMITED > ROLE_VIP \n " +
-                "ROLE_VIP > ROLE_USER";
-        roleHierarchy.setHierarchy(hierarchy);
-        return roleHierarchy;
-    }
-
-    /**
-     * public enum ERole {
-     *     ROLE_USER,
-     *     ROLE_VIP,
-     *     ROLE_VIP_UNLIMITED,
-     *     ROLE_MODERATOR,
-     *     ROLE_ADMIN
-     * }
-     */
 
 
     /**

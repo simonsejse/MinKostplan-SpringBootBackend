@@ -1,10 +1,14 @@
 package dk.minkostplan.backend.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.minkostplan.backend.payload.response.ApiError;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,8 +16,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Configuration
 @EnableWebSecurity
@@ -63,7 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/resources/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/login").permitAll()
                     .antMatchers(HttpMethod.POST, "/signup").permitAll()
-                    .antMatchers(HttpMethod.GET, "isAuthenticated").permitAll()
-                .anyRequest().authenticated();
+                    .antMatchers(HttpMethod.GET, "isAuthenticated").permitAll();
+             //   .anyRequest().authenticated();
     }
 }

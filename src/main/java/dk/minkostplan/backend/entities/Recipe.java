@@ -9,6 +9,9 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 //Static meals in db
@@ -29,7 +32,8 @@ public class Recipe {
     @Id
     private Long id;
 
-    @Column(name="recipeName", nullable = false)
+    @Size(min = 3, max = 72, message = "Navn på din ret kan være mellem 3-72 characters.")
+    @Column(name="recipeName", length = 72, nullable = false)
     private String name;
 
     @Column(name="recipeApproval", nullable = false)
