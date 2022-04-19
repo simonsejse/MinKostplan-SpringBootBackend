@@ -15,8 +15,8 @@ public class MailConfig {
         mailSender.setHost("send.one.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("no-reply@min-kostplan.dk");
-        mailSender.setPassword("MinKostplanErSmuk2001!");
+        mailSender.setUsername("");
+        mailSender.setPassword("");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
