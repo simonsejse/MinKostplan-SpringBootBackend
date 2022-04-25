@@ -63,7 +63,7 @@ public class RecipeController {
     @GetMapping("/{id}")
     public @ResponseBody ResponseEntity<RecipeDTO> getRecipeById(
             @PathVariable("id") long id,
-            @RequestParam(required = false) @Min(value=50, message = "Kalorier kan ikke være under 10!") Float calories
+            @RequestParam(required = false) @Min(value=50, message = "Kalorier kan ikke være under 50!") Float calories
     ) throws RecipeException {
         RecipeDTO recipeDTOById = recipeService.getRecipeDTOById(id, calories);
         return new ResponseEntity<>(recipeDTOById, HttpStatus.OK);

@@ -39,18 +39,18 @@ public class SmtpMailSender {
     }
 
 
-    //@Bean
+   // @Bean
     void sendMailBean() throws MessagingException {
         StringBuilder message = new StringBuilder();
 
-        message.append("Hej Sofie")
+        message.append("Hej Laze daddy!")
                 .append("<br/>");
 
-        message.append("Tak for din mail, du er grim!")
+        message.append("Tak for din mail, du er en løvebror!")
                 .append("<br/>");
 
 
-        send("simonwa01@gmail.com", "RE: Efterspørgsmål", message.toString());
+        send("lazesmash@gmail.com", "RE: Efterspørgsmål", message.toString());
     }
 
 

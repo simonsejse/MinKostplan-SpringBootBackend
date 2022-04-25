@@ -33,6 +33,10 @@ public class Meta {
             cascade = {CascadeType.MERGE,CascadeType.PERSIST}
     )
     public Set<Ingredient> ingredient;
+
+    public Meta(String meta){
+        this.meta = meta;
+    }
 }
 
 

@@ -41,6 +41,7 @@ public class RecipeCreateRequest {
     @NotNull(message = "Du mangler ingrediserne 'klar på minutter' feltet!")
     private Integer readyInMinutes;
     @NotNull(message = "Du mangler billede feltet!")
+    @NotBlank(message = "Du mangler billede feltet!")
     private String image;
     @NotEmpty(message = "Ingredienserne kan ikke være tom!")
     @NotNull(message = "Du mangler ingrediserne feltet!")
