@@ -14,16 +14,11 @@ import dk.minkostplan.backend.payload.request.recipe.RecipeCreateRequest;
 import dk.minkostplan.backend.service.FoodService;
 import dk.minkostplan.backend.service.MetaService;
 import dk.minkostplan.backend.service.RecipeService;
-import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;

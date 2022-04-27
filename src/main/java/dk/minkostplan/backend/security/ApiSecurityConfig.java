@@ -110,8 +110,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                     /* User Controller */
                     .antMatchers(HttpMethod.GET, "/api/user").hasAnyRole("USER", "ADMIN")
                     /* Food Controller */
-                    .antMatchers(HttpMethod.GET, "/api/foods/").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api/foods/new").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/foods").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/foods/").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/foods/new").hasRole("ADMIN")
                     /* DietPlan controller */
                     .antMatchers(HttpMethod.POST, "/api/diet-plans/create-diet-plan").hasRole("USER")
                 .and()
