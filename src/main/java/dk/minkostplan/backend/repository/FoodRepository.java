@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface FoodRepository extends JpaRepository<Food, Long> {
@@ -16,7 +17,7 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     @Query("SELECT f FROM Food f WHERE f.ingredients = :ingredients")
     List<Food> getFoodByIngredients(Set<Ingredient> ingredients);
 
-    Boolean existsByName(String name);
+    Optional<FoodDTO> getFoodById(Long id);
 
-    Food findByName(String name);
+    Boolean existsByName(String name);
 }

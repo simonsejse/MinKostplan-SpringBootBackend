@@ -39,4 +39,12 @@ public class FoodService {
         );
         foodRepo.save(food);
     }
+
+    public FoodDTO getFoodDTOById(Long id) throws FoodException {
+        final FoodDTO foodById = foodRepo.getFoodById(id)
+                .orElseThrow(
+                        () -> new FoodException(HttpStatus.NOT_FOUND, "Kunne ikke finde den specfikke ingrediens!")
+                );
+        return foodById;
+    }
 }

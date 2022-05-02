@@ -23,6 +23,14 @@ public class FoodController {
         return ResponseEntity.ok(foodService.findAllFoodDTOs());
     }
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FoodDTO> getFoodById(@PathVariable(value="id") Long id) throws FoodException{
+        FoodDTO foodDTO = foodService.getFoodDTOById(id);
+        return ResponseEntity.ok(foodDTO);
+    }
+
+
     @PostMapping("/new")
     public ResponseEntity<String> addFood(@RequestBody FoodDTO foodDTO) throws FoodException {
         foodService.createNewFood(foodDTO);

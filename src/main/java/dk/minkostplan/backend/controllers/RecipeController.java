@@ -81,15 +81,12 @@ public class RecipeController {
     public @ResponseBody ResponseEntity<Object> createNewRecipe(
             @Valid @RequestBody RecipeCreateRequest recipe
     ) throws RecipeException, MetaException, FoodException {
-
-
-
         float calories = 0f, protein = 0f, fat = 0f, carbs = 0f;
 
         Recipe newRecipe = new Recipe.Builder()
                 .vegetarian(recipe.getVegetarian())
                 .vegan(recipe.getVegan())
-                .type(recipe.getType())
+                .type(RecipeType.valueOf(recipe.getType()))
                 .glutenFree(recipe.getGlutenFree())
                 .dairyFree(recipe.getDairyFree())
                 .veryHealthy(recipe.getVeryHealthy())

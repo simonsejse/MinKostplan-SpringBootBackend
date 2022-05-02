@@ -1,8 +1,11 @@
 package dk.minkostplan.backend.payload.request.recipe;
 
+import dk.minkostplan.backend.constraints.RecipeTypeValid;
 import dk.minkostplan.backend.models.RecipeType;
 import lombok.Data;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -16,8 +19,10 @@ public class RecipeCreateRequest {
     @NotBlank(message = "Navnet på din ret kan ikke være blank!")
     @NotNull(message = "Du mangler navn feltet!")
     private String name;
+    @NotBlank(message = "Du kan ikke lade opskrift typen være tom!")
     @NotNull(message = "Du mangler rettens type feltet!")
-    private RecipeType type;
+    @RecipeTypeValid
+    private String type;
     @NotNull(message = "Du mangler vegetarisk feltet!")
     private Boolean vegetarian;
     @NotNull(message = "Du mangler vegansk feltet!")
