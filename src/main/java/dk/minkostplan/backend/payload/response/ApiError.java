@@ -5,21 +5,22 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 @Builder
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiError extends Object{
+public class ApiError{
     @JsonProperty("status")
     private int status;
     @JsonProperty("timestamp")
     private long timestamp;
     @JsonProperty("errorType")
     private String errorType;
-    @JsonProperty("message")
-    private String message;
+    @JsonProperty("errors")
+    private List<String> errors;
     @JsonProperty("path")
     private String path;
 }

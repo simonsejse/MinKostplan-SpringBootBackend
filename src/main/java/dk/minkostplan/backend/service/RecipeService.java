@@ -1,17 +1,28 @@
 package dk.minkostplan.backend.service;
 
+import dk.minkostplan.backend.entities.Ingredient;
 import dk.minkostplan.backend.entities.Meta;
 import dk.minkostplan.backend.entities.Recipe;
 import dk.minkostplan.backend.exceptions.RecipeException;
+import dk.minkostplan.backend.models.RecipeApproval;
 import dk.minkostplan.backend.models.dtos.recipes.*;
-import dk.minkostplan.backend.repository.*;
+import dk.minkostplan.backend.payload.request.RecipeViewList;
+import dk.minkostplan.backend.repository.FoodRepository;
+import dk.minkostplan.backend.repository.IngredientRepository;
+import dk.minkostplan.backend.repository.MetaRepository;
+import dk.minkostplan.backend.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,11 +44,11 @@ public class RecipeService {
 
     @Transactional
     public RecipeDTO getRecipeDTOById(long id, @Min(value = 10, message = "Kalorier kan ikke være under 10!") Float calories) throws RecipeException {
-        Recipe recipe = recipeRepository.getRecipeFetchIngredients(id).orElseThrow(() ->
+        Optional<Recipe> recipeFetchIngredients = recipeRepository.getRecipe(id);
+
+        Recipe recipe = recipeFetchIngredients.orElseThrow(() ->
                 new RecipeException(String.format("Der findes ikke et måltid med ID %d!", id), HttpStatus.NOT_FOUND)
         );
-
-        recipe = recipeRepository.getRecipeFetchInstructions(recipe);
 
         RecipeDTO recipeDTO = new RecipeDTO(recipe);
 
@@ -46,7 +57,9 @@ public class RecipeService {
         MacroDTO macros = recipeDTO.getMacros();
         float ratio = macros.getWanted().getCalories() / macros.getNormal().getCalories();
 
-        List<IngredientDTO> ingredientDTOList = recipe.getIngredients()
+        List<Ingredient> ingredients = recipeRepository.getIngredientsUsingRecipe(recipe);
+
+        List<IngredientDTO> ingredientDTOList = ingredients
                 .stream()
                 .map(ingredient -> {
                     IngredientDTO ingredientDTO = new IngredientDTO(ingredient);
@@ -84,11 +97,19 @@ public class RecipeService {
     @Transactional
     public void deleteRecipeById(Long recipeId) throws RecipeException {
         Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new RecipeException(String.format("Opskrift med id %d findes ikke!", recipeId), HttpStatus.NOT_FOUND));
+                .orElseThrow(
+                        () -> new RecipeException(String.format("Opskrift med id %d findes ikke!", recipeId), HttpStatus.NOT_FOUND)
+                );
 
         recipeRepository.deleteRecipeIngredients(recipe);
         recipeRepository.deleteRecipeInstructions(recipe);
         recipeRepository.deleteRecipe(recipe);
 
+    }
+
+    public Page<RecipeViewList> findAllByApproval(RecipeApproval approval, Pageable pageable) {
+        Page<Recipe> allByApproval = recipeRepository.findAllByApproval(approval, pageable);
+        Page<RecipeViewList> recipeViewLists = allByApproval.map(RecipeViewList::new);
+        return recipeViewLists;
     }
 }

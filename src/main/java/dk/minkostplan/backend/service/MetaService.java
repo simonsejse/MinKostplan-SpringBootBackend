@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.function.Function;
 
 @Service
 public class MetaService {
@@ -27,13 +28,17 @@ public class MetaService {
         );
     }
 
-    public boolean doesMetaExists(String meta) {
-        return metaRepository.existsByMeta(meta);
-    }
-
     @Transactional
     public void createMeta(String metaName) {
         Meta meta = new Meta(metaName);
         metaRepository.save(meta);
+    }
+
+    public boolean doesMetaExistsOrCreate(String metaName) {
+        boolean exists = metaRepository.existsByMeta(metaName);
+        if (!exists) {
+            createMeta(metaName);
+        }
+        return true;
     }
 }

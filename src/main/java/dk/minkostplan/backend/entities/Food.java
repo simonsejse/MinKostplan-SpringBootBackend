@@ -6,9 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 //Static foods in db
 @Getter
@@ -54,7 +52,8 @@ public class Food {
             cascade = {CascadeType.ALL},
             mappedBy="food"
     )
-    private Set<Ingredient> ingredients = new HashSet<>();
+    private List<Ingredient> ingredients = new ArrayList<>();
+
 
     public Food(String foodType, String name, float kj, float kcal, float protein, float carbs, float fat, float addedSugars, float fibers) {
         this.foodType = foodType;

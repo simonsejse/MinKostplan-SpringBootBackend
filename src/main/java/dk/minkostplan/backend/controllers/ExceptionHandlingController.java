@@ -34,6 +34,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -42,11 +43,11 @@ import java.util.Set;
 @ControllerAdvice
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
-    public ResponseEntity<Object> createResponseEntity(HttpStatus status, String message, String path){
+    public ResponseEntity<Object> createResponseEntity(HttpStatus status, List<String> errors, String path){
         ApiError apiError = ApiError.builder()
                 .path(path)
                 .timestamp(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
-                .message(message)
+                .errors(errors)
                 .status(status.value())
                 .errorType(status.name())
                 .build();
@@ -56,59 +57,58 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        FieldError fieldError = ex.getFieldError();
-        String errorMessage = fieldError != null ? fieldError.getDefaultMessage() : ex.getMessage();
-        return createResponseEntity(status, errorMessage, "");
-    }
-
-
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return createResponseEntity(status, ex.getMessage(), "");
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return createResponseEntity(status, ex.getMessage(), request.getContextPath());
+        List<String> errors = new ArrayList<>();
+        ex.getFieldErrors().stream().map(FieldError::getDefaultMessage).forEach(errors::add);
+        return createResponseEntity(status, errors, "");
     }
 
 
     @Override
     protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        FieldError fieldError = ex.getFieldError();
-        logger.info(ex.getMessage());
-        String errorMessage = fieldError != null ? fieldError.getDefaultMessage() : ex.getMessage();
-        return createResponseEntity(status, errorMessage, request.getContextPath());
+        List<String> errors = new ArrayList<>();
+        ex.getFieldErrors().stream().map(FieldError::getDefaultMessage).forEach(errors::add);
+        return createResponseEntity(status, errors, request.getContextPath());
     }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return createResponseEntity(status, Collections.singletonList(ex.getMessage()), "");
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return createResponseEntity(status, Collections.singletonList(ex.getMessage()), request.getContextPath());
+    }
+
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUsernameNotFound(final HttpServletRequest request, UsernameNotFoundException e){
-        return createResponseEntity(HttpStatus.NOT_FOUND, e.getMessage(), request.getServletPath());
+        return createResponseEntity(HttpStatus.NOT_FOUND, Collections.singletonList(e.getMessage()), request.getServletPath());
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolationException(final HttpServletRequest request, SQLIntegrityConstraintViolationException e){
-        return createResponseEntity(HttpStatus.CONFLICT, e.getMessage(), request.getServletPath());
+        return createResponseEntity(HttpStatus.CONFLICT, Collections.singletonList(e.getMessage()), request.getServletPath());
     }
 
     @ExceptionHandler(FoodException.class)
     public ResponseEntity<Object> handleFoodException(final HttpServletRequest request, FoodException exception){
-        return createResponseEntity(exception.getStatus(), exception.getMessage(), request.getServletPath());
+        return createResponseEntity(exception.getStatus(), Collections.singletonList(exception.getMessage()), request.getServletPath());
     }
 
     @ExceptionHandler(RecipeException.class)
     public ResponseEntity<Object> handleMealException(final HttpServletRequest request, RecipeException exception){
-        return createResponseEntity(exception.getStatus(), exception.getMessage(), request.getServletPath());
+        return createResponseEntity(exception.getStatus(), Collections.singletonList(exception.getMessage()), request.getServletPath());
     }
 
     @ExceptionHandler(MetaException.class)
     public ResponseEntity<Object> handleMetaException(final HttpServletRequest request, MetaException exception){
-        return createResponseEntity(exception.getStatus(), exception.getMessage(), request.getServletPath());
+        return createResponseEntity(exception.getStatus(), Collections.singletonList(exception.getMessage()), request.getServletPath());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintException(final HttpServletRequest request, ConstraintViolationException exception){
         final List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(exception.getConstraintViolations());
-        return createResponseEntity(HttpStatus.BAD_REQUEST, constraintViolations.get(0).getMessage(), request.getServletPath());
+        return createResponseEntity(HttpStatus.BAD_REQUEST, Collections.singletonList(constraintViolations.get(0).getMessage()), request.getServletPath());
     }
 }

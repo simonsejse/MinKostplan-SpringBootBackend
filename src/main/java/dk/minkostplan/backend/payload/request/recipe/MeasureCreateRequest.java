@@ -9,7 +9,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Data
 public class MeasureCreateRequest {
-    @NotNull(message = "type feltet kan ikke være tomt!")
+    @NotNull(message = "Dit måletype felt er tomt!")
     private MeasureType type;
     @NotNull(message = "amountOfType feltet kan ikke være tomt!")
     @PositiveOrZero(message = "Mængden af din egen givne måleenhed kan ikke være et negativ tal!")

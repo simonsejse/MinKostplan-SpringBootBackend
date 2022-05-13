@@ -7,20 +7,23 @@ import org.springframework.stereotype.Component;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 @Component
-public class MetaExistValidator implements ConstraintValidator<MetaExist, List<String>> {
+public class MetaExistOrCreateValidator implements ConstraintValidator<MetaExistOrCreate, Set<String>> {
 
     private final MetaService metaService;
 
     @Autowired
-    public MetaExistValidator(MetaService metaService) {
+    public MetaExistOrCreateValidator(MetaService metaService) {
         this.metaService = metaService;
     }
 
     @Override
-    public boolean isValid(List<String> metas, ConstraintValidatorContext constraintValidatorContext) {
-        return metas.stream().filter(Predicate.not(String::isEmpty)).allMatch(metaService::doesMetaExists);
+    public boolean isValid(Set<String> metas, ConstraintValidatorContext constraintValidatorContext) {
+        return metas.stream()
+                .filter(Predicate.not(String::isEmpty))
+                .allMatch(metaService::doesMetaExistsOrCreate);
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 
 //@Component
-@Slf4j
+//@Slf4j
 public class LoadFoodRunner implements CommandLineRunner {
 
     private final RecipeRepository recipeRepository;
@@ -31,7 +31,6 @@ public class LoadFoodRunner implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-      log.info("Command Line Runner is being ran");
       ClassPathResource resource = new ClassPathResource("Frida20190802dav3.xlsx");
 
       Workbook workbook = new XSSFWorkbook(resource.getInputStream());

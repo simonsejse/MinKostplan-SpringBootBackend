@@ -19,6 +19,10 @@ public class RecipeCreateRequest {
     @NotBlank(message = "Navnet på din ret kan ikke være blank!")
     @NotNull(message = "Du mangler navn feltet!")
     private String name;
+    @Size(min = 20, max = 300, message = "Din beskrivelse skal mindst være mellem 20-300 ord.")
+    @NotBlank(message = "Din beskrivelse kan ikke være blank!")
+    @NotNull(message = "Du mangler beskrivelse feltet!")
+    private String description;
     @NotBlank(message = "Du kan ikke lade opskrift typen være tom!")
     @NotNull(message = "Du mangler rettens type feltet!")
     @RecipeTypeValid
@@ -43,15 +47,15 @@ public class RecipeCreateRequest {
     private Float pricePerServing;
     @NotNull(message = "Du mangler instruktioner feltet!")
     private String instructions;
-    @NotNull(message = "Du mangler ingrediserne 'klar på minutter' feltet!")
+    @NotNull(message = "Du mangler (KLAR OM (MIN.) feltet!")
     private Integer readyInMinutes;
     @NotNull(message = "Du mangler billede feltet!")
     @NotBlank(message = "Du mangler billede feltet!")
     private String image;
-    @NotEmpty(message = "Ingredienserne kan ikke være tom!")
-    @NotNull(message = "Du mangler ingrediserne feltet!")
+    @NotEmpty(message = "Du mangler at tilføje ingrediserne!")
+    @NotNull(message = "Du mangler at tilføje ingrediserne!")
     private List<@Valid IngredientCreateRequest> ingredients;
-    @NotEmpty(message = "Ingredienserne kan ikke være tom!")
-    @NotNull(message = "Du mangler instrukser feltet!")
+    @NotEmpty(message = "Du mangler at tilføje instruktioner!")
+    @NotNull(message = "Du mangler at tilføje instruktioner!")
     private List<@Valid InstructionCreateRequest> analyzedInstructions;
 }

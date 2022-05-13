@@ -29,11 +29,6 @@ public class Meta {
     @Column(name = "meta", unique = true)
     private String meta;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.MERGE,CascadeType.PERSIST}
-    )
-    public Set<Ingredient> ingredient;
-
     public Meta(String meta){
         this.meta = meta;
     }

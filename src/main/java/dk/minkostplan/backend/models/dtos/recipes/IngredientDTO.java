@@ -19,8 +19,6 @@ public class IngredientDTO {
     private Long id;
     @JsonProperty("amount")
     private float amount;
-    @JsonProperty("instruction")
-    private String instruction;
     @JsonProperty("measures")
     private MeasurementsDTO measurementsDTO;
     @JsonProperty("metas")
@@ -30,7 +28,6 @@ public class IngredientDTO {
         this.foodDTO = new FoodDTO(ingredient.getFood());
         this.id = ingredient.getId();
         this.amount = ingredient.getAmount();
-        this.instruction = ingredient.getInstruction();
 
         final Measurement measure = ingredient.getMeasure();
         this.measurementsDTO = MeasurementsDTO.builder()

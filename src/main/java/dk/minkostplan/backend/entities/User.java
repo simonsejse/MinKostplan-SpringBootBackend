@@ -32,6 +32,9 @@ public class User {
     @Column(name = "user_pw")
     private String password;
 
+    @Column(name="recipes_made")
+    private int totalRecipesMade;
+
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {
@@ -72,6 +75,7 @@ public class User {
     @Column(name = "account_expired")
     private boolean accountExpired;
 
+
     public void createNewTicket(Ticket ticket){
         ticket.setSubmittedBy(this);
         this.tickets.add(ticket);
@@ -89,4 +93,8 @@ public class User {
     }
 
     protected User(){}
+
+    public void incrementRecipesTotalMade() {
+        this.totalRecipesMade++;
+    }
 }

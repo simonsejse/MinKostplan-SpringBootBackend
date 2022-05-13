@@ -20,13 +20,15 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class RecipeDTO {
-    @JsonProperty(value="recipeId")
+    @JsonProperty(value="id")
     private long id;
-    @JsonProperty(value="recipeName")
+    @JsonProperty(value="name")
     private String name;
-    @JsonProperty(value="recipeApproval")
+    @JsonProperty(value="description")
+    private String description;
+    @JsonProperty(value="approval")
     private RecipeApproval recipeApproval;
-    @JsonProperty(value="recipeType")
+    @JsonProperty(value="type")
     private RecipeType recipeType;
     @JsonProperty(value="vegetarian")
     private Boolean vegetarian;
@@ -62,6 +64,7 @@ public class RecipeDTO {
     public RecipeDTO(Recipe recipe){
         this.id = recipe.getId();
         this.name = recipe.getName();
+        this.description = recipe.getDescription();
         this.recipeApproval = recipe.getApproval();
         this.recipeType = recipe.getType();
         this.vegetarian = recipe.getVegetarian();

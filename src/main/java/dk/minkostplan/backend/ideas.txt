@@ -1,0 +1,8 @@
+[#1 subrecipes]:
+    - That makes sense, can you include a subrecipe?
+    - Not to mention other stuff like side dishes or whatever
+    - Essentially, be able to include a subrecipe like sauce or smth like this
+    - Into other recipes. So likje when I'm creating a recipe,
+    - I can say I also want an ingredient to be sauce essentially, and then that sauce would essentially
+    - be a whole recipe be it self so a subrecipe
+

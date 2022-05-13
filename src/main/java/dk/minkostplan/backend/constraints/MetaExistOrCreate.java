@@ -8,9 +8,9 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = MetaExistValidator.class)
-public @interface MetaExist {
-    String message() default "Du har brugt meta data i din opskrift som ikke findes i databasen!";
+@Constraint(validatedBy = MetaExistOrCreateValidator.class)
+public @interface MetaExistOrCreate {
+    String message() default "Kunne ikke tilføje den valgte ingrediens tag!";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

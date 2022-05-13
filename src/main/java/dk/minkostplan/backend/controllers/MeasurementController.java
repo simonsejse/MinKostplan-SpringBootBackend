@@ -1,6 +1,7 @@
 package dk.minkostplan.backend.controllers;
 
 import dk.minkostplan.backend.models.MeasureType;
+import dk.minkostplan.backend.models.dtos.MeasureDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +16,12 @@ import java.util.stream.Collectors;
 public class MeasurementController {
 
     @GetMapping
-    public ResponseEntity<List<String>> getAvailableMeasurements(){
+    public ResponseEntity<List<MeasureDTO>> getAvailableMeasurements(){
+
         final MeasureType[] values = MeasureType.values();
-        final List<String> measurements = Arrays.stream(values).map(MeasureType::getName).collect(Collectors.toList());
-        return ResponseEntity.ok(measurements);
+        List<MeasureDTO> measureDTOs = Arrays.stream(values)
+                .map(MeasureDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(measureDTOs);
     }
 }

@@ -32,9 +32,11 @@ public class Recipe {
     @Id
     private Long id;
 
-    @Size(min = 3, max = 72, message = "Navn på din ret kan være mellem 3-72 characters.")
     @Column(name="recipeName", length = 72, nullable = false)
     private String name;
+
+    @Column(name="description", nullable = false)
+    private String description;
 
     @Column(name="recipeApproval", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -80,6 +82,12 @@ public class Recipe {
     @Column(name="image", length = 64)
     private String image;
 
+    /* One Recipe To One User*/
+    @OneToOne(
+            fetch = FetchType.LAZY
+    )
+    private User createdBy;
+
     @OneToOne(
             fetch=FetchType.LAZY,
             mappedBy="recipe",
@@ -114,6 +122,7 @@ public class Recipe {
 
     public Recipe(Builder builder) {
         this.name = builder.name;
+        this.description = builder.description;
         this.type = builder.type;
         this.vegetarian = builder.vegetarian;
         this.vegan = builder.vegan;
@@ -127,7 +136,7 @@ public class Recipe {
         this.instructions = builder.instructions;
         this.readyInMinutes = builder.readyInMinutes;
         this.image = builder.image;
-        this.approval = RecipeApproval.ACCEPTED;
+        this.approval = RecipeApproval.AWAITING_CONFIRMATION;
     }
 
     public Recipe() { }
@@ -136,6 +145,7 @@ public class Recipe {
     @Setter
     public static class Builder{
         private String name;
+        public String description;
         private RecipeType type;
         private Boolean vegetarian;
         private Boolean vegan;
@@ -186,6 +196,10 @@ public class Recipe {
         this.macros = macros;
     }
 
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
     /**
      * The Recipe object uses the entity identifier for equality since it lacks a unique business key.
      * We cannot hash the id since when the object is being attached and persisted (hibernate states) it will be located
@@ -199,11 +213,15 @@ public class Recipe {
      *
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Recipe)) return false;
-        Recipe recipe = (Recipe) o;
-        return this.id != null && this.id.equals(recipe.getId());
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Recipe other = (Recipe) obj;
+        return id != null && id.equals(other.getId());
     }
 
     @Override

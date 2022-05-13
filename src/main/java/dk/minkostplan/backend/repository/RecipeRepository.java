@@ -1,28 +1,36 @@
 package dk.minkostplan.backend.repository;
 
+import dk.minkostplan.backend.entities.Ingredient;
+import dk.minkostplan.backend.entities.Meta;
 import dk.minkostplan.backend.entities.Recipe;
+import dk.minkostplan.backend.entities.RecipeInstruction;
+import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.payload.request.RecipeViewList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+
     @Query("SELECT r FROM Recipe r " +
-            "JOIN FETCH r.ingredients ig " +
-            "JOIN FETCH r.macros " +
-            "INNER JOIN FETCH ig.food " +
-            "INNER JOIN FETCH ig.measure " +
-            "LEFT JOIN FETCH ig.meta " +
+            "LEFT JOIN FETCH r.macros " +
+            "LEFT JOIN FETCH r.analyzedInstructions " +
             "WHERE r.id = :id")
-    Optional<Recipe> getRecipeFetchIngredients(Long id);
+    Optional<Recipe> getRecipe(Long id);
 
-    @Query("SELECT r FROM Recipe r " +
-            "JOIN FETCH r.analyzedInstructions a " +
-            "WHERE r = :recipe")
-    Recipe getRecipeFetchInstructions(Recipe recipe);
+    @Query("SELECT DISTINCT(i) from Ingredient i " +
+            "JOIN FETCH i.measure " +
+            "JOIN FETCH i.food " +
+            "LEFT JOIN FETCH i.meta " +
+            "where i.recipe = :recipe")
+    List<Ingredient> getIngredientsUsingRecipe(Recipe recipe);
 
-
+    Page<Recipe> findAllByApproval(RecipeApproval approval, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM Recipe r where r = :recipe")

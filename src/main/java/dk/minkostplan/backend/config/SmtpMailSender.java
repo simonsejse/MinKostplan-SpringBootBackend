@@ -31,7 +31,6 @@ public class SmtpMailSender {
         helper.setFrom("no-reply@min-kostplan.dk");
         helper.setTo(to);
 
-
         helper.setText(body + "<br />" + HTML_SIGNATURE, true); // true indicates html
 
         javaMailSender.send(message);
@@ -39,11 +38,11 @@ public class SmtpMailSender {
     }
 
 
-   // @Bean
+    //@Bean
     void sendMailBean() throws MessagingException {
         StringBuilder message = new StringBuilder();
 
-        message.append("Hej Laze daddy!")
+        message.append("Hej Tugge!")
                 .append("<br/>");
 
         message.append("Tak for din mail, du er en løvebror!")

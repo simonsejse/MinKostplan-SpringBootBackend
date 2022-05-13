@@ -44,9 +44,6 @@ public class Ingredient {
     @Column(name="amount", nullable = false)
     private float amount;
 
-    @Column(name="instruction")
-    private String instruction;
-
     @OneToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
@@ -59,26 +56,31 @@ public class Ingredient {
 
     )
     @JoinTable(
+            name="ingredient_meta",
             joinColumns = {@JoinColumn(name="fk_ingredient")},
             inverseJoinColumns = {@JoinColumn(name="fk_meta")}
     )
     private Set<Meta> meta = new HashSet<>();
 
-    public Ingredient(Food food, float amount, String instruction, Measurement measure, Set<Meta> meta) {
+    public Ingredient(Food food, float amount, Measurement measure, Set<Meta> meta) {
         this.food = food;
         this.amount = amount;
-        this.instruction = instruction;
         this.measure = measure;
         this.meta = meta;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ingredient)) return false;
-        Ingredient that = (Ingredient) o;
-        return Objects.equals(getId(), that.getId());
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Ingredient other = (Ingredient) obj;
+        return id != null && id.equals(other.getId());
     }
+
 
     @Override
     public int hashCode() {
