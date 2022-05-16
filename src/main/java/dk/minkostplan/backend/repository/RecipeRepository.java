@@ -1,11 +1,8 @@
 package dk.minkostplan.backend.repository;
 
 import dk.minkostplan.backend.entities.Ingredient;
-import dk.minkostplan.backend.entities.Meta;
 import dk.minkostplan.backend.entities.Recipe;
-import dk.minkostplan.backend.entities.RecipeInstruction;
-import dk.minkostplan.backend.models.RecipeApproval;
-import dk.minkostplan.backend.payload.request.RecipeViewList;
+import dk.minkostplan.backend.models.Approval;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,7 +27,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             "where i.recipe = :recipe")
     List<Ingredient> getIngredientsUsingRecipe(Recipe recipe);
 
-    Page<Recipe> findAllByApproval(RecipeApproval approval, Pageable pageable);
+    Page<Recipe> findAllByApproval(Approval approval, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM Recipe r where r = :recipe")

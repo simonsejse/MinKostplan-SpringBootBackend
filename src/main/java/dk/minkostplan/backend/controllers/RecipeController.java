@@ -6,7 +6,7 @@ import dk.minkostplan.backend.exceptions.FoodException;
 import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.exceptions.RecipeException;
 import dk.minkostplan.backend.models.MeasureType;
-import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.RecipeType;
 import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
 import dk.minkostplan.backend.payload.request.RecipeViewList;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -85,7 +84,7 @@ public class RecipeController {
 
     @GetMapping("/awaiting-approval")
     public Page<RecipeViewList> findAwaitedRecipes(Pageable pageable){
-        return recipeService.findAllByApproval(RecipeApproval.AWAITING_CONFIRMATION, pageable);
+        return recipeService.findAllByApproval(Approval.AWAITING_CONFIRMATION, pageable);
     }
 
     @GetMapping("/random")

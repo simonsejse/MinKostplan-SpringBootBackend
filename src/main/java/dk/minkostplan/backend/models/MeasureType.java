@@ -3,6 +3,8 @@ package dk.minkostplan.backend.models;
 public enum MeasureType {
     TSP("teske"),
     PIECES("styk(s)"),
+    LITER("liter"),
+    MILLILITER("milliliter"),
     GRAMS("gram"),
     KILOGRAMS("kilogram");
 

@@ -4,7 +4,7 @@ import dk.minkostplan.backend.entities.Ingredient;
 import dk.minkostplan.backend.entities.Meta;
 import dk.minkostplan.backend.entities.Recipe;
 import dk.minkostplan.backend.exceptions.RecipeException;
-import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.dtos.recipes.*;
 import dk.minkostplan.backend.payload.request.RecipeViewList;
 import dk.minkostplan.backend.repository.FoodRepository;
@@ -18,11 +18,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,7 +105,7 @@ public class RecipeService {
 
     }
 
-    public Page<RecipeViewList> findAllByApproval(RecipeApproval approval, Pageable pageable) {
+    public Page<RecipeViewList> findAllByApproval(Approval approval, Pageable pageable) {
         Page<Recipe> allByApproval = recipeRepository.findAllByApproval(approval, pageable);
         Page<RecipeViewList> recipeViewLists = allByApproval.map(RecipeViewList::new);
         return recipeViewLists;

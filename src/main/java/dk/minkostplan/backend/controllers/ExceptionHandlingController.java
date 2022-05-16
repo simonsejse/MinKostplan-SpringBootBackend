@@ -106,6 +106,11 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
         return createResponseEntity(exception.getStatus(), Collections.singletonList(exception.getMessage()), request.getServletPath());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Object> handleIllegalStateException(final HttpServletRequest request, IllegalStateException exception){
+        return createResponseEntity(HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintException(final HttpServletRequest request, ConstraintViolationException exception){
         final List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(exception.getConstraintViolations());

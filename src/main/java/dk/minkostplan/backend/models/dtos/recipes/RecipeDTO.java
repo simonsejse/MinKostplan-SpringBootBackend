@@ -1,21 +1,13 @@
 package dk.minkostplan.backend.models.dtos.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.minkostplan.backend.entities.Ingredient;
 import dk.minkostplan.backend.entities.Recipe;
-import dk.minkostplan.backend.entities.RecipeInstruction;
-import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.RecipeType;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SortNatural;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -27,7 +19,7 @@ public class RecipeDTO {
     @JsonProperty(value="description")
     private String description;
     @JsonProperty(value="approval")
-    private RecipeApproval recipeApproval;
+    private Approval recipeApproval;
     @JsonProperty(value="type")
     private RecipeType recipeType;
     @JsonProperty(value="vegetarian")

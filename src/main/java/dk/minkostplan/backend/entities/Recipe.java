@@ -1,7 +1,7 @@
 package dk.minkostplan.backend.entities;
 
 
-import dk.minkostplan.backend.models.RecipeApproval;
+import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.RecipeType;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,6 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.util.*;
 
 //Static meals in db
@@ -40,7 +37,7 @@ public class Recipe {
 
     @Column(name="recipeApproval", nullable = false)
     @Enumerated(EnumType.STRING)
-    private RecipeApproval approval;
+    private Approval approval;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name="recipeType", nullable = false)
@@ -120,6 +117,12 @@ public class Recipe {
     )
     private final Set<DietPlan> dietPlans = new HashSet<>();
 
+    @JoinColumn(name = "state_id")
+    @OneToOne(
+            fetch = FetchType.LAZY
+    )
+    private State state;
+
     public Recipe(Builder builder) {
         this.name = builder.name;
         this.description = builder.description;
@@ -136,7 +139,7 @@ public class Recipe {
         this.instructions = builder.instructions;
         this.readyInMinutes = builder.readyInMinutes;
         this.image = builder.image;
-        this.approval = RecipeApproval.AWAITING_CONFIRMATION;
+        this.approval = Approval.AWAITING_CONFIRMATION;
     }
 
     public Recipe() { }
