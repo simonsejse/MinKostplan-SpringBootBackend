@@ -7,5 +7,17 @@ MySQL --- fetch ---> Hibernate Persistence Context -----> DTOs
 
 
 
+While above answers are accurate, I will present the answer in a different way.
+
+Both @OneToMany and @ManyToOne have two parts; left part and right part. For example:
+
+@OneToMany = 'One' is left part and 'Many' is right part
+@ManyToOne = 'Many' is left part and 'One' is right part
+Simple rule of association using this understanding is, left part represents the class in which you are defining the association.
+
+So, if you define @ManyToOne in OrderLine class referencing to Order class, it means many OrderLine associated to one Order class.
 
 
+Bidirectional one-to-many and both many-to-one association mappings are fine.
+But you should avoid unidirectional one-to-many associations in your domain model.
+Otherwise, Hibernate might create unexpected tables and execute more SQL statements than you expected.

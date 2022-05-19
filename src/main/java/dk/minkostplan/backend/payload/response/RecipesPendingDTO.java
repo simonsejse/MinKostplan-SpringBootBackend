@@ -1,15 +1,11 @@
-package dk.minkostplan.backend.payload.request;
+package dk.minkostplan.backend.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.minkostplan.backend.entities.Recipe;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class RecipeViewList {
+public class RecipesPendingDTO {
     @JsonProperty("id")
     private Long id;
     @JsonProperty("name")
@@ -18,11 +14,20 @@ public class RecipeViewList {
     private String description;
     @JsonProperty("createdBy")
     private String createdBy;
+    @JsonProperty("upvotes")
+    private int upvotes;
+    @JsonProperty("downvotes")
+    private int downvotes;
 
-    public RecipeViewList(Recipe recipe) {
+
+    protected RecipesPendingDTO() { }
+
+    public RecipesPendingDTO(Recipe recipe, int upvotes, int downvotes) {
         this.id = recipe.getId();
         this.name = recipe.getName();
         this.description = recipe.getDescription();
         this.createdBy = recipe.getCreatedBy().getEmail();
+        this.upvotes = upvotes;
+        this.downvotes = downvotes;
     }
 }

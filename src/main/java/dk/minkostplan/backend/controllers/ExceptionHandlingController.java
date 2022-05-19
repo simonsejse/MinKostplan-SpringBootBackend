@@ -108,7 +108,9 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Object> handleIllegalStateException(final HttpServletRequest request, IllegalStateException exception){
-        return createResponseEntity(HttpStatus.BAD_REQUEST)
+
+        /* change illegal state "httpstatus.bad_request" not sure if its right status code */
+        return createResponseEntity(HttpStatus.BAD_REQUEST, Collections.singletonList(exception.getMessage()), request.getServletPath());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

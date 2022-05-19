@@ -29,13 +29,13 @@ public class Recipe {
     @Id
     private Long id;
 
-    @Column(name="recipeName", length = 72, nullable = false)
+    @Column(name="name", length = 72, nullable = false)
     private String name;
 
     @Column(name="description", nullable = false)
     private String description;
 
-    @Column(name="recipeApproval", nullable = false)
+    @Column(name="approval", nullable = false)
     @Enumerated(EnumType.STRING)
     private Approval approval;
 
@@ -109,6 +109,11 @@ public class Recipe {
     @SortNatural
     private final List<RecipeInstruction> analyzedInstructions = new LinkedList<>();
 
+    @OneToMany(
+            fetch = FetchType.LAZY
+    )
+    private List<RecipeVote> recipeVotes;
+
     /* Many Meals to Many "Various" DietPlans
     * I.e. One "Recipe" can be in various DietPlans */
     @ManyToMany(
@@ -116,12 +121,6 @@ public class Recipe {
             cascade = {CascadeType.MERGE,CascadeType.PERSIST}
     )
     private final Set<DietPlan> dietPlans = new HashSet<>();
-
-    @JoinColumn(name = "state_id")
-    @OneToOne(
-            fetch = FetchType.LAZY
-    )
-    private State state;
 
     public Recipe(Builder builder) {
         this.name = builder.name;
@@ -139,7 +138,7 @@ public class Recipe {
         this.instructions = builder.instructions;
         this.readyInMinutes = builder.readyInMinutes;
         this.image = builder.image;
-        this.approval = Approval.AWAITING_CONFIRMATION;
+        this.approval = Approval.PENDING;
     }
 
     public Recipe() { }

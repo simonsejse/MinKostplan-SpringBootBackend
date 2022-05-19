@@ -6,11 +6,8 @@ import dk.minkostplan.backend.entities.Recipe;
 import dk.minkostplan.backend.exceptions.RecipeException;
 import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.dtos.recipes.*;
-import dk.minkostplan.backend.payload.request.RecipeViewList;
-import dk.minkostplan.backend.repository.FoodRepository;
-import dk.minkostplan.backend.repository.IngredientRepository;
-import dk.minkostplan.backend.repository.MetaRepository;
-import dk.minkostplan.backend.repository.RecipeRepository;
+import dk.minkostplan.backend.payload.response.RecipesPendingDTO;
+import dk.minkostplan.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -21,6 +18,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,21 +29,42 @@ public class RecipeService {
     private final IngredientRepository ingredientRepository;
     private final MetaRepository metaRepository;
     private final FoodRepository foodRepository;
+    private final RecipeVoteRepository recipeVoteRepository;
 
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, MetaRepository metaRepository, FoodRepository foodRepository) {
+    public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, MetaRepository metaRepository, FoodRepository foodRepository, RecipeVoteRepository recipeVoteRepository) {
         this.recipeRepository = recipeRepository;
         this.ingredientRepository = ingredientRepository;
         this.metaRepository = metaRepository;
         this.foodRepository = foodRepository;
+        this.recipeVoteRepository = recipeVoteRepository;
+    }
+
+    public Recipe getRecipeById(long recipeId) throws RecipeException {
+        return recipeRepository.findById(recipeId).orElseThrow(new Supplier<RecipeException>(){
+            @Override
+            public RecipeException get() {
+                return new RecipeException(
+                        String.format("Der findes ikke et måltid med ID %d!", recipeId), HttpStatus.NOT_FOUND
+                );
+            }
+        });
     }
 
     @Transactional
-    public RecipeDTO getRecipeDTOById(long id, @Min(value = 10, message = "Kalorier kan ikke være under 10!") Float calories) throws RecipeException {
-        Optional<Recipe> recipeFetchIngredients = recipeRepository.getRecipe(id);
+    public RecipeDTO getRecipeDTOById(long recipeId,
+                                      @Min(value = 10, message = "Kalorier kan ikke være under 10!") Float calories
+    ) throws RecipeException {
+        Optional<Recipe> recipeFetchIngredients = recipeRepository.getRecipe(recipeId);
 
-        Recipe recipe = recipeFetchIngredients.orElseThrow(() ->
-                new RecipeException(String.format("Der findes ikke et måltid med ID %d!", id), HttpStatus.NOT_FOUND)
+        Recipe recipe = recipeFetchIngredients.orElseThrow(new Supplier<RecipeException>() {
+           @Override
+           public RecipeException get() {
+               return new RecipeException(
+                       String.format("Der findes ikke et måltid med ID %d!", recipeId), HttpStatus.NOT_FOUND
+               );
+           }
+       }
         );
 
         RecipeDTO recipeDTO = new RecipeDTO(recipe);
@@ -105,9 +124,15 @@ public class RecipeService {
 
     }
 
-    public Page<RecipeViewList> findAllByApproval(Approval approval, Pageable pageable) {
-        Page<Recipe> allByApproval = recipeRepository.findAllByApproval(approval, pageable);
-        Page<RecipeViewList> recipeViewLists = allByApproval.map(RecipeViewList::new);
-        return recipeViewLists;
+    @Transactional
+    public Page<RecipesPendingDTO> findAllByApproval(Approval approval, Pageable pageable) {
+        Page<Recipe> recipes = recipeRepository.findAllByApproval(approval, pageable);
+
+        return recipes.map(recipe -> {
+            int upvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, true);;
+            int downvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, false);
+            return new RecipesPendingDTO(recipe, upvotes, downvotes);
+        });
     }
+
 }

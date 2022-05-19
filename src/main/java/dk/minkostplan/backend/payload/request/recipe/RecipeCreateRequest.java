@@ -15,11 +15,11 @@ import java.util.List;
 
 @Data
 public class RecipeCreateRequest {
-    @Size(min = 3, max = 72, message = "Navn på din ret kan være mellem 3-72 characters.")
+    @Size(min = 5, max = 100, message = "Navn på din ret kan være mellem 5-100 characters.")
     @NotBlank(message = "Navnet på din ret kan ikke være blank!")
     @NotNull(message = "Du mangler navn feltet!")
     private String name;
-    @Size(min = 20, max = 300, message = "Din beskrivelse skal mindst være mellem 20-300 ord.")
+    @Size(min = 20, max = 500, message = "Din beskrivelse skal mindst være mellem 20-500 ord.")
     @NotBlank(message = "Din beskrivelse kan ikke være blank!")
     @NotNull(message = "Du mangler beskrivelse feltet!")
     private String description;

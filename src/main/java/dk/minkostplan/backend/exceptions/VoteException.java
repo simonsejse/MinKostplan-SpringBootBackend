@@ -2,11 +2,10 @@ package dk.minkostplan.backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class RecipeException extends RuntimeException {
-
+public class VoteException extends RuntimeException {
     private HttpStatus status;
 
-    public RecipeException(String message, HttpStatus status){
+    public VoteException(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }
@@ -15,5 +14,3 @@ public class RecipeException extends RuntimeException {
         return status;
     }
 }
-
-

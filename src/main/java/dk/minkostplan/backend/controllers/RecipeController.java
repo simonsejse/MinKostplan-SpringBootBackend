@@ -9,14 +9,11 @@ import dk.minkostplan.backend.models.MeasureType;
 import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.RecipeType;
 import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
-import dk.minkostplan.backend.payload.request.RecipeViewList;
+import dk.minkostplan.backend.payload.response.RecipesPendingDTO;
 import dk.minkostplan.backend.payload.request.recipe.IngredientCreateRequest;
 import dk.minkostplan.backend.payload.request.recipe.MeasureCreateRequest;
 import dk.minkostplan.backend.payload.request.recipe.RecipeCreateRequest;
-import dk.minkostplan.backend.service.FoodService;
-import dk.minkostplan.backend.service.MetaService;
-import dk.minkostplan.backend.service.RecipeService;
-import dk.minkostplan.backend.service.UserService;
+import dk.minkostplan.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -44,19 +41,22 @@ public class RecipeController {
     private final MetaService metaService;
     private final FoodService foodService;
     private final UserService userService;
+    private final RecipeVoteService recipeVoteService;
 
     @Autowired
     public RecipeController(@Qualifier("recipeService") RecipeService recipeService,
                             @Qualifier("metaService") MetaService metaService,
                             @Qualifier("objectMapper") ObjectMapper objectMapper,
                             @Qualifier("foodService") FoodService foodService,
-                            @Qualifier("userService") UserService userService
+                            @Qualifier("userService") UserService userService,
+                            @Qualifier("recipeVoteService") RecipeVoteService recipeVoteService
     ) {
         this.recipeService = recipeService;
         this.metaService = metaService;
         this.objectMapper = objectMapper;
         this.foodService = foodService;
         this.userService = userService;
+        this.recipeVoteService = recipeVoteService;
     }
 
     @CrossOrigin("http://localhost:3000/")
@@ -69,7 +69,22 @@ public class RecipeController {
         return ResponseEntity.ok(recipeCategories);
     }
 
+    @CrossOrigin("http://localhost:3000/")
+    @GetMapping("/vote/{id}")
+    public ResponseEntity<String> createNewRecipeVoteByRecipeAndUser(
+            @PathVariable("id") long recipeId,
+            @RequestParam(value = "isUpvote", required = true) boolean isUpvote,
+            Authentication authentication
+    ) throws RecipeException, UsernameNotFoundException {
+        //TODO: Change exception thrown later!
+        if (authentication == null)
+            throw new IllegalStateException("Du er ikke logget ind!");
 
+        User user = userService.getUserByUsername(authentication.getName());
+        Recipe recipe = recipeService.getRecipeById(recipeId);
+        recipeVoteService.createNewRecipeVoteByRecipeAndUser(recipe, user, isUpvote);
+        return ResponseEntity.ok("OK");
+    }
 
     @CrossOrigin("http://localhost:3000/")
     @GetMapping("/{id}")
@@ -83,8 +98,8 @@ public class RecipeController {
     }
 
     @GetMapping("/awaiting-approval")
-    public Page<RecipeViewList> findAwaitedRecipes(Pageable pageable){
-        return recipeService.findAllByApproval(Approval.AWAITING_CONFIRMATION, pageable);
+    public Page<RecipesPendingDTO> findAwaitedRecipes(Pageable pageable){
+        return recipeService.findAllByApproval(Approval.PENDING, pageable);
     }
 
     @GetMapping("/random")
@@ -109,7 +124,7 @@ public class RecipeController {
             Authentication authentication
     ) throws RecipeException, MetaException, FoodException, UsernameNotFoundException {
         float calories = 0f, protein = 0f, fat = 0f, carbs = 0f;
-        if (authentication.getName() == null)
+        if (authentication == null)
             throw new RecipeException("Kunne ikke finde brugeren, du er umiddelbart ikke logget ind!", HttpStatus.UNAUTHORIZED);
 
         //CHANGE EVERYTHING IN HERE TO A SERVICE WITH TRANSACTIONMAL
