@@ -109,11 +109,19 @@ public class RecipeController {
         return new ResponseEntity<>(recipeService.getRandomRecipes(amount.orElse(1)), HttpStatus.OK);
     }
 
+    @PostMapping("/confirm/{id}")
+    public ResponseEntity<String> confirmRecipeById(@PathVariable("id") long recipeId){
+        recipeService.acceptRecipeById(recipeId);
+        return new ResponseEntity<>("Du har accepteret opskrift #" + recipeId + " den kan nu findes i systemet af andre brugere!", HttpStatus.OK);
+    }
+
+
+
+
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Map<String, String>> deleteOldRecipe(@PathVariable("id") Long recipeId) throws RecipeException {
+    public ResponseEntity<String> deleteOldRecipe(@PathVariable("id") Long recipeId) throws RecipeException {
         recipeService.deleteRecipeById(recipeId);
-        Map<String, String> message = Map.of("message", "opskrift slettet", "recipe_id", String.valueOf(recipeId));
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(String.format("Opskrift #%d blev slettet fra databasen!", recipeId), HttpStatus.OK);
     }
 
 

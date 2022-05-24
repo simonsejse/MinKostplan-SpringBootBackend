@@ -40,4 +40,12 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Modifying
     @Query("DELETE FROM RecipeInstruction i WHERE i.recipe = :recipe")
     void deleteRecipeInstructions(Recipe recipe);
+
+    @Modifying
+    @Query("DELETE FROM Macros m WHERE m.recipe = :recipe")
+    void deleteRecipeMacros(Recipe recipe);
+
+    @Modifying
+    @Query("DELETE FROM RecipeVote rv WHERE rv.recipeVoteId.recipe = :recipe")
+    void deleteRecipeVotes(Recipe recipe);
 }

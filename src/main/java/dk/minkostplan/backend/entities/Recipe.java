@@ -40,7 +40,7 @@ public class Recipe {
     private Approval approval;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name="recipeType", nullable = false)
+    @Column(name="type", nullable = false)
     private RecipeType type;
 
     @Column(name="isVegetarian", nullable = false)

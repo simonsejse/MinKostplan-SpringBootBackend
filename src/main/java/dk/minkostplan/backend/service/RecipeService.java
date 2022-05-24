@@ -112,24 +112,38 @@ public class RecipeService {
     }
 
     @Transactional
+    public void acceptRecipeById(long recipeId) {
+        final Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(
+                    () -> new RecipeException(String.format("Opskrift med id %d findes ikke!", recipeId), HttpStatus.NOT_FOUND)
+                );
+        recipe.setApproval(Approval.ACCEPTED);
+    }
+    @Transactional
     public void deleteRecipeById(Long recipeId) throws RecipeException {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(
-                        () -> new RecipeException(String.format("Opskrift med id %d findes ikke!", recipeId), HttpStatus.NOT_FOUND)
+                    () -> new RecipeException(String.format("Opskrift med id %d findes ikke!", recipeId), HttpStatus.NOT_FOUND)
                 );
 
         recipeRepository.deleteRecipeIngredients(recipe);
         recipeRepository.deleteRecipeInstructions(recipe);
+        recipeRepository.deleteRecipeMacros(recipe);
+        recipeRepository.deleteRecipeVotes(recipe);
         recipeRepository.deleteRecipe(recipe);
 
     }
 
+    /**
+     *
+     * TODO: Could be a lot more efficient:
+     */
     @Transactional
     public Page<RecipesPendingDTO> findAllByApproval(Approval approval, Pageable pageable) {
         Page<Recipe> recipes = recipeRepository.findAllByApproval(approval, pageable);
 
         return recipes.map(recipe -> {
-            int upvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, true);;
+            int upvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, true);
             int downvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, false);
             return new RecipesPendingDTO(recipe, upvotes, downvotes);
         });
