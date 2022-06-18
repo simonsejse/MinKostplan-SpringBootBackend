@@ -1,6 +1,7 @@
 package dk.minkostplan.backend.service;
 
 import dk.minkostplan.backend.entities.Meta;
+import dk.minkostplan.backend.entities.MetaType;
 import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.repository.MetaRepository;
 import org.apache.xmlbeans.XmlNegativeInteger;
@@ -21,8 +22,8 @@ public class MetaService {
         this.metaRepository = metaRepository;
     }
 
-    public Meta getMeta(String metaName) throws MetaException {
-        return metaRepository.findByMeta(metaName)
+    public Meta getMeta(String metaName, MetaType metaType) throws MetaException {
+        return metaRepository.findByMetaAndMetaType(metaName, metaType)
                 .orElseThrow(
                         () -> new MetaException(HttpStatus.NOT_FOUND, String.format("`%s` findes ikke som meta data til maden!", metaName))
         );

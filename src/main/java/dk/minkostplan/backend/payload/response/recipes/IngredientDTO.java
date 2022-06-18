@@ -1,15 +1,9 @@
-package dk.minkostplan.backend.models.dtos.recipes;
+package dk.minkostplan.backend.payload.response.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.minkostplan.backend.entities.Food;
 import dk.minkostplan.backend.entities.Ingredient;
 import dk.minkostplan.backend.entities.Measurement;
-import dk.minkostplan.backend.entities.Meta;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 public class IngredientDTO {
@@ -21,8 +15,7 @@ public class IngredientDTO {
     private float amount;
     @JsonProperty("measures")
     private MeasurementsDTO measurementsDTO;
-    @JsonProperty("metas")
-    private Set<String> metas;
+
 
     public IngredientDTO(Ingredient ingredient){
         this.foodDTO = new FoodDTO(ingredient.getFood());

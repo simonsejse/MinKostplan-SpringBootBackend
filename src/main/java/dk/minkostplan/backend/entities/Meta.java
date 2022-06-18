@@ -29,6 +29,10 @@ public class Meta {
     @Column(name = "meta", unique = true)
     private String meta;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name="meta_type", nullable = false)
+    private MetaType metaType;
+
     public Meta(String meta){
         this.meta = meta;
     }

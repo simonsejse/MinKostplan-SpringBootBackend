@@ -1,11 +1,9 @@
-package dk.minkostplan.backend.models.dtos.recipes;
+package dk.minkostplan.backend.payload.response.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.minkostplan.backend.entities.Food;
-import dk.minkostplan.backend.entities.Ingredient;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 @Getter
 @Setter

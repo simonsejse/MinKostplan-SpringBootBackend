@@ -1,4 +1,4 @@
-package dk.minkostplan.backend.models.dtos;
+package dk.minkostplan.backend.payload.response;
 
 import dk.minkostplan.backend.models.MeasureType;
 import lombok.*;

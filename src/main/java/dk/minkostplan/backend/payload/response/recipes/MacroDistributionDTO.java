@@ -1,4 +1,4 @@
-package dk.minkostplan.backend.models.dtos.recipes;
+package dk.minkostplan.backend.payload.response.recipes;
 
 import lombok.Data;
 import lombok.Setter;

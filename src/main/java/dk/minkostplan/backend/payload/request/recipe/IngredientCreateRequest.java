@@ -19,7 +19,4 @@ public class IngredientCreateRequest {
     private Float amount;
     @NotNull(message = "Dit measure kan ikke være null")
     private @Valid MeasureCreateRequest measures;
-    @NotNull(message = "metas feltet kan ikke være tomt!")
-    @MetaExistOrCreate
-    private Set<String> meta;
 }

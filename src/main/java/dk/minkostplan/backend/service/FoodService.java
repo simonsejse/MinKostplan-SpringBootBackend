@@ -1,7 +1,7 @@
 package dk.minkostplan.backend.service;
 
 import dk.minkostplan.backend.entities.Food;
-import dk.minkostplan.backend.models.dtos.recipes.FoodDTO;
+import dk.minkostplan.backend.payload.response.recipes.FoodDTO;
 import dk.minkostplan.backend.repository.FoodRepository;
 import dk.minkostplan.backend.exceptions.FoodException;
 import org.springframework.beans.factory.annotation.Autowired;

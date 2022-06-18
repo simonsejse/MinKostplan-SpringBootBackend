@@ -5,10 +5,11 @@ import dk.minkostplan.backend.entities.*;
 import dk.minkostplan.backend.exceptions.FoodException;
 import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.exceptions.RecipeException;
+import dk.minkostplan.backend.interfaceprojections.DisplayRecipeProjection;
 import dk.minkostplan.backend.models.MeasureType;
 import dk.minkostplan.backend.models.Approval;
 import dk.minkostplan.backend.models.RecipeType;
-import dk.minkostplan.backend.models.dtos.recipes.RecipeDTO;
+import dk.minkostplan.backend.payload.response.recipes.RecipeDTO;
 import dk.minkostplan.backend.payload.response.RecipesPendingDTO;
 import dk.minkostplan.backend.payload.request.recipe.IngredientCreateRequest;
 import dk.minkostplan.backend.payload.request.recipe.MeasureCreateRequest;
@@ -31,7 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Validated
-@RestController
+@RestController(value= "api/recipes")
 @RequestMapping("api/recipes")
 public class RecipeController {
 
@@ -97,15 +98,20 @@ public class RecipeController {
         return new ResponseEntity<>(recipeDTOById, HttpStatus.OK);
     }
 
+    @GetMapping("/show")
+    public Page<DisplayRecipeProjection> getPageOfRecipeDisplays(Pageable pageable){
+        return recipeService.getPageOfRecipeDisplays(Approval.ACCEPTED, pageable);
+    }
+
     @GetMapping("/awaiting-approval")
     public Page<RecipesPendingDTO> findAwaitedRecipes(Pageable pageable){
         return recipeService.findAllByApproval(Approval.PENDING, pageable);
     }
 
+
     @GetMapping("/random")
     public @ResponseBody
     ResponseEntity<List<RecipeDTO>> getRandomRecipes(@RequestParam(name = "amount") Optional<Integer> amount) {
-
         return new ResponseEntity<>(recipeService.getRandomRecipes(amount.orElse(1)), HttpStatus.OK);
     }
 
@@ -117,13 +123,11 @@ public class RecipeController {
 
 
 
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteOldRecipe(@PathVariable("id") Long recipeId) throws RecipeException {
         recipeService.deleteRecipeById(recipeId);
         return new ResponseEntity<>(String.format("Opskrift #%d blev slettet fra databasen!", recipeId), HttpStatus.OK);
     }
-
 
     @PostMapping("/new")
     public @ResponseBody
@@ -139,10 +143,11 @@ public class RecipeController {
         //CHANGE EVERYTHING IN HERE TO A SERVICE WITH TRANSACTIONMAL
         //CHANGE EVERYTHING IN HERE TO A SERVICE WITH TRANSACTIONMAL
 
+
         Recipe newRecipe = new Recipe.Builder()
                 .vegetarian(recipe.getVegetarian())
                 .vegan(recipe.getVegan())
-                .type(RecipeType.valueOf(recipe.getType()))
+                .type(recipe.getType())
                 .glutenFree(recipe.getGlutenFree())
                 .dairyFree(recipe.getDairyFree())
                 .veryHealthy(recipe.getVeryHealthy())
@@ -176,18 +181,20 @@ public class RecipeController {
             fat += amountInGrams * (food.getFat() / 100);
             carbs += amountInGrams * (food.getCarbs() / 100);
 
-            Set<Meta> metas = new HashSet<>();
+           /*Set<Meta> recipeMeta = new HashSet<>();
             for (String metaName : ingredient.getMeta()) {
                 Meta meta = metaService.getMeta(metaName);
                 metas.add(meta);
-            }
+            }*/
+
+
+
 
             Ingredient recipe_ingredient = Ingredient.builder()
                     .food(food)
                     .recipe(newRecipe)
                     .amount(ingredient.getAmount())
                     .measure(measurement)
-                    .meta(metas)
                     .build();
 
             newRecipe.addIngredient(recipe_ingredient);

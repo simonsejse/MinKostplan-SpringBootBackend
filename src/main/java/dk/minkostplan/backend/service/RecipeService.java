@@ -1,11 +1,11 @@
 package dk.minkostplan.backend.service;
 
 import dk.minkostplan.backend.entities.Ingredient;
-import dk.minkostplan.backend.entities.Meta;
 import dk.minkostplan.backend.entities.Recipe;
 import dk.minkostplan.backend.exceptions.RecipeException;
+import dk.minkostplan.backend.interfaceprojections.DisplayRecipeProjection;
 import dk.minkostplan.backend.models.Approval;
-import dk.minkostplan.backend.models.dtos.recipes.*;
+import dk.minkostplan.backend.payload.response.recipes.*;
 import dk.minkostplan.backend.payload.response.RecipesPendingDTO;
 import dk.minkostplan.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -84,8 +83,6 @@ public class RecipeService {
                     MeasurementsDTO measurementsDTO = ingredientDTO.getMeasurementsDTO();
                     measurementsDTO.setAmountInGrams(measurementsDTO.getAmountInGrams() * ratio);
                     measurementsDTO.setAmountOfType(measurementsDTO.getAmountOfType() * ratio);
-                    Set<String> metas = ingredient.getMeta().stream().map(Meta::getMeta).collect(Collectors.toSet());
-                    ingredientDTO.setMetas(metas);
                     return ingredientDTO;
                 })
                 .collect(Collectors.toList());
@@ -119,6 +116,7 @@ public class RecipeService {
                 );
         recipe.setApproval(Approval.ACCEPTED);
     }
+
     @Transactional
     public void deleteRecipeById(Long recipeId) throws RecipeException {
         Recipe recipe = recipeRepository.findById(recipeId)
@@ -148,5 +146,11 @@ public class RecipeService {
             return new RecipesPendingDTO(recipe, upvotes, downvotes);
         });
     }
+
+    public Page<DisplayRecipeProjection> getPageOfRecipeDisplays(Approval approval, Pageable pageable) {
+        Page<DisplayRecipeProjection> allReviewRecipeViewByApproval = recipeRepository.getPageOfRecipeDisplay(approval, pageable);
+        return allReviewRecipeViewByApproval;
+    }
+
 
 }

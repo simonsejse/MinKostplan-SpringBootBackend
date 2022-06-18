@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Documented
 @Constraint(validatedBy = MetaExistOrCreateValidator.class)
 public @interface MetaExistOrCreate {
-    String message() default "Kunne ikke tilføje den valgte ingrediens tag!";
+    String message() default "Kunne ikke tilføje det valgte opskrift tag!";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

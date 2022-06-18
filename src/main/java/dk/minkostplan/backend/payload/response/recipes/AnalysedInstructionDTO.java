@@ -1,4 +1,4 @@
-package dk.minkostplan.backend.models.dtos.recipes;
+package dk.minkostplan.backend.payload.response.recipes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.minkostplan.backend.entities.RecipeInstruction;

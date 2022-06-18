@@ -114,6 +114,18 @@ public class Recipe {
     )
     private List<RecipeVote> recipeVotes;
 
+    @ManyToMany(
+            fetch = FetchType.LAZY
+
+    )
+    @JoinTable(
+            name="recipe_meta",
+            joinColumns = {@JoinColumn(name="fk_recipe")},
+            inverseJoinColumns = {@JoinColumn(name="fk_meta")}
+    )
+    private Set<Meta> meta = new HashSet<>();
+
+
     /* Many Meals to Many "Various" DietPlans
     * I.e. One "Recipe" can be in various DietPlans */
     @ManyToMany(

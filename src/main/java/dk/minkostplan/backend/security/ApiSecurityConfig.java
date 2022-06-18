@@ -11,9 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,8 +20,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -100,6 +95,10 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authorizeRequests()
+                    /* Auth Controller */
+                    .antMatchers(HttpMethod.GET, "/isAuthenticated").permitAll()
+                    .antMatchers(HttpMethod.GET, "/signup").permitAll()
+                    .antMatchers(HttpMethod.GET, "/reset/credentials").permitAll()
                     /* Recipe Controller */
                     .antMatchers(HttpMethod.GET, "/api/recipes/categories").hasAnyRole("USER", "ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/recipes/confirm/**").hasAnyRole("MOD", "ADMIN")
@@ -110,6 +109,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/api/tickets/new").authenticated()
                     /* User Controller */
                     .antMatchers(HttpMethod.GET, "/api/user").hasAnyRole("USER", "ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/user/info-for-sidebar").hasAnyRole("USER", "ADMIN")
                     /* Food Controller */
                     .antMatchers(HttpMethod.GET, "/api/foods").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/foods/").hasRole("ADMIN")

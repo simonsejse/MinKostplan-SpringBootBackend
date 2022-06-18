@@ -1,17 +1,17 @@
 package dk.minkostplan.backend.payload.request.recipe;
 
-import dk.minkostplan.backend.constraints.RecipeTypeValid;
+import dk.minkostplan.backend.constraints.EnumNamePattern;
+import dk.minkostplan.backend.constraints.MetaExistOrCreate;
 import dk.minkostplan.backend.models.RecipeType;
 import lombok.Data;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class RecipeCreateRequest {
@@ -23,10 +23,12 @@ public class RecipeCreateRequest {
     @NotBlank(message = "Din beskrivelse kan ikke være blank!")
     @NotNull(message = "Du mangler beskrivelse feltet!")
     private String description;
-    @NotBlank(message = "Du kan ikke lade opskrift typen være tom!")
     @NotNull(message = "Du mangler rettens type feltet!")
-    @RecipeTypeValid
-    private String type;
+    @EnumNamePattern(
+        enumNames ="MORGENMAD|EFTERMIDDAGSMAD|FROKOST|SNACK|AFTENSMAD|ALLE",
+        message="Denne opskrift type findes ikke!"
+    )
+    private RecipeType type;
     @NotNull(message = "Du mangler vegetarisk feltet!")
     private Boolean vegetarian;
     @NotNull(message = "Du mangler vegansk feltet!")
@@ -52,8 +54,11 @@ public class RecipeCreateRequest {
     @NotNull(message = "Du mangler billede feltet!")
     @NotBlank(message = "Du mangler billede feltet!")
     private String image;
-    @NotEmpty(message = "Du mangler at tilføje ingrediserne!")
-    @NotNull(message = "Du mangler at tilføje ingrediserne!")
+    @NotNull(message = "metas feltet kan ikke være tomt!")
+    @MetaExistOrCreate
+    private Set<String> meta;
+    @NotEmpty(message = "Du mangler at tilføje ingredienserne!")
+    @NotNull(message = "Du mangler at tilføje ingredienserne!")
     private List<@Valid IngredientCreateRequest> ingredients;
     @NotEmpty(message = "Du mangler at tilføje instruktioner!")
     @NotNull(message = "Du mangler at tilføje instruktioner!")

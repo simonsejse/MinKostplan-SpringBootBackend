@@ -1,6 +1,6 @@
 package dk.minkostplan.backend.entities;
 
-import dk.minkostplan.backend.models.dtos.recipes.FoodDTO;
+import dk.minkostplan.backend.payload.response.recipes.FoodDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;

@@ -3,9 +3,7 @@ package dk.minkostplan.backend.exceptions;
 import org.springframework.http.HttpStatus;
 
 public class RecipeException extends RuntimeException {
-
     private HttpStatus status;
-
     public RecipeException(String message, HttpStatus status){
         super(message);
         this.status = status;

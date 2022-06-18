@@ -2,6 +2,7 @@ package dk.minkostplan.backend.repository;
 
 import dk.minkostplan.backend.entities.Ingredient;
 import dk.minkostplan.backend.entities.Recipe;
+import dk.minkostplan.backend.interfaceprojections.DisplayRecipeProjection;
 import dk.minkostplan.backend.models.Approval;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +24,24 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("SELECT DISTINCT(i) from Ingredient i " +
             "JOIN FETCH i.measure " +
             "JOIN FETCH i.food " +
-            "LEFT JOIN FETCH i.meta " +
             "where i.recipe = :recipe")
     List<Ingredient> getIngredientsUsingRecipe(Recipe recipe);
 
     Page<Recipe> findAllByApproval(Approval approval, Pageable pageable);
+
+    @Query("SELECT " +
+            "r.id AS id, " +
+            "r.name as name, " +
+            "r.macros.calories AS calories, " +
+            "r.macros.protein as protein, " +
+            "r.macros.fat as fat, " +
+            "r.macros.carbs as carbs, " +
+            "r.pricePerServing as pricePerServing, " +
+            "r.readyInMinutes as readyInMinutes, " +
+            "r.image as image " +
+            "from Recipe r " +
+            "WHERE r.approval =:approval")
+    Page<DisplayRecipeProjection> getPageOfRecipeDisplay(Approval approval, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM Recipe r where r = :recipe")

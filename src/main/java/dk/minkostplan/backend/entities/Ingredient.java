@@ -9,9 +9,7 @@ import java.util.Set;
 
 @Entity(name = "Ingredient")
 @Table(name = "ingredient")
-@Getter
 @Builder
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ingredient {
@@ -25,6 +23,7 @@ public class Ingredient {
             allocationSize = 1
     )
     @Column(name = "id", unique = true)
+    @Getter @Setter
     private Long id;
 
     /* Many FoodAttribute to One Food */
@@ -32,6 +31,7 @@ public class Ingredient {
             fetch = FetchType.LAZY
     )
     @JoinColumn(name="fk_food_id")
+    @Getter @Setter
     private Food food;
 
     /* Many Ingredients to One Meal */
@@ -39,9 +39,11 @@ public class Ingredient {
             fetch = FetchType.LAZY
     )
     @JoinColumn(name="fk_recipe_id")
+    @Getter @Setter
     private Recipe recipe;
 
     @Column(name="amount", nullable = false)
+    @Getter @Setter
     private float amount;
 
     @OneToOne(
@@ -49,24 +51,14 @@ public class Ingredient {
             fetch = FetchType.LAZY,
             optional = false
     )
+    @Getter @Setter
     private Measurement measure;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY
 
-    )
-    @JoinTable(
-            name="ingredient_meta",
-            joinColumns = {@JoinColumn(name="fk_ingredient")},
-            inverseJoinColumns = {@JoinColumn(name="fk_meta")}
-    )
-    private Set<Meta> meta = new HashSet<>();
-
-    public Ingredient(Food food, float amount, Measurement measure, Set<Meta> meta) {
+    public Ingredient(Food food, float amount, Measurement measure) {
         this.food = food;
         this.amount = amount;
         this.measure = measure;
-        this.meta = meta;
     }
 
     @Override
