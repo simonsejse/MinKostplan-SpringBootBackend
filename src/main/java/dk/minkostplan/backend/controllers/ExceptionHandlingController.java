@@ -4,6 +4,7 @@ package dk.minkostplan.backend.controllers;
 import dk.minkostplan.backend.exceptions.FoodException;
 import dk.minkostplan.backend.exceptions.MetaException;
 import dk.minkostplan.backend.exceptions.RecipeException;
+import dk.minkostplan.backend.exceptions.ResetCredentialsException;
 import dk.minkostplan.backend.payload.response.ApiError;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.Ordered;
@@ -104,6 +105,11 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(MetaException.class)
     public ResponseEntity<Object> handleMetaException(final HttpServletRequest request, MetaException exception){
+        return createResponseEntity(exception.getStatus(), Collections.singletonList(exception.getMessage()), request.getServletPath());
+    }
+
+    @ExceptionHandler(ResetCredentialsException.class)
+    public ResponseEntity<Object> handleResetCredentialsException(final HttpServletRequest request, ResetCredentialsException exception){
         return createResponseEntity(exception.getStatus(), Collections.singletonList(exception.getMessage()), request.getServletPath());
     }
 

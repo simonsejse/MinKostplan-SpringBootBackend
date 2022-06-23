@@ -92,13 +92,14 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .authorizeRequests()
                     /* Auth Controller */
                     .antMatchers(HttpMethod.GET, "/isAuthenticated").permitAll()
                     .antMatchers(HttpMethod.GET, "/signup").permitAll()
                     .antMatchers(HttpMethod.GET, "/reset/credentials").permitAll()
+                    .antMatchers(HttpMethod.POST, "/reset/credentials").permitAll()
                     /* Recipe Controller */
                     .antMatchers(HttpMethod.GET, "/api/recipes/categories").hasAnyRole("USER", "ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/recipes/confirm/**").hasAnyRole("MOD", "ADMIN")

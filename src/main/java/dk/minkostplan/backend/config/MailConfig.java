@@ -16,7 +16,7 @@ public class MailConfig {
         mailSender.setPort(587);
 
         mailSender.setUsername("no-reply@min-kostplan.dk");
-        mailSender.setPassword("");
+        mailSender.setPassword("MinKostplanErSmuk123!");
 
 
         Properties props = mailSender.getJavaMailProperties();

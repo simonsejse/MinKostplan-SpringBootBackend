@@ -3,15 +3,19 @@ package dk.minkostplan.backend.service;
 import dk.minkostplan.backend.config.SmtpMailSender;
 import dk.minkostplan.backend.entities.PasswordToken;
 import dk.minkostplan.backend.entities.User;
+import dk.minkostplan.backend.exceptions.ResetCredentialsException;
 import dk.minkostplan.backend.models.MailValidator;
+import dk.minkostplan.backend.payload.request.ResetCredentialsRequest;
 import dk.minkostplan.backend.payload.response.PwdResetTokenView;
 import dk.minkostplan.backend.utils.Messaging;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
@@ -20,11 +24,13 @@ public class AuthenticationService {
 
     private final UserService userService;
     private final SmtpMailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthenticationService(UserService userService, SmtpMailSender mailSender){
+    public AuthenticationService(UserService userService, SmtpMailSender mailSender, PasswordEncoder passwordEncoder){
         this.userService = userService;
         this.mailSender = mailSender;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -46,8 +52,11 @@ public class AuthenticationService {
         Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()){
             PasswordToken passwordToken = new PasswordToken(user.get());
-            req.setAttribute("RESET_PWD_CODE", new PwdResetTokenView(passwordToken.getUniqueId(), passwordToken.getExpiresAt(), email));
-            String url = "http://www.localhost:3000/cred/reset?passwordToken=" + passwordToken.getUniqueId();
+            System.out.println("TEST");
+            req.getSession().setAttribute("RESET_PWD_CODE", new PwdResetTokenView(passwordToken.getUniqueId(), passwordToken.getExpiresAt(), email));
+            System.out.println(req.getSession().getId()+":id");
+            System.out.println("TEST");
+            String url = "http://localhost:3000/reset/credentials?passwordToken=" + passwordToken.getUniqueId();
             String resetCredentials = Messaging.RESET_CREDENTIALS_HTML.replace("${url}", url);
             mailSender.queue(MailValidator.VALID, email, "Reset your credentials!", resetCredentials);
         }else {
@@ -68,5 +77,34 @@ public class AuthenticationService {
         }
     }
 
+    @Transactional
+    public String resetCredentials(ResetCredentialsRequest resetCredentials, HttpServletRequest req) throws ResetCredentialsException {
+        System.out.println("TEST2");
+        System.out.println(req.getSession().getId()+":id");
+        System.out.println("TEST2");
+        PwdResetTokenView pwdResetTokenView = (PwdResetTokenView) req.getSession().getAttribute("RESET_PWD_CODE");
+        if (pwdResetTokenView == null){
+            throw new ResetCredentialsException("Du har ikke anmodet om at resætte dit kodeord!", HttpStatus.NOT_FOUND);
+        }
 
+        if (!resetCredentials.getToken().equals(pwdResetTokenView.getToken().toString())){
+            throw new ResetCredentialsException("Token didn't match token in session!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (LocalDateTime.now().isAfter(pwdResetTokenView.getExpiresAt())){
+            throw new ResetCredentialsException("Din token er udløbet! Den udløber efter 15minutter!", HttpStatus.REQUEST_TIMEOUT);
+        }
+
+        if (!resetCredentials.getNewPassword().equals(resetCredentials.getNewPasswordConfirmed())){
+            throw new ResetCredentialsException("Dine to kodeord stemmer ikke overens med hinanden!", HttpStatus.BAD_REQUEST);
+        }
+
+        String email = pwdResetTokenView.getEmail();
+        //set user new password
+        User userByUsername = userService.getUserByUsername(email);
+        userByUsername.setPassword(passwordEncoder.encode(
+                resetCredentials.getNewPassword())
+        );
+        return "OK";
+    }
 }
