@@ -17,6 +17,8 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -52,7 +54,7 @@ public class RecipeService {
 
     @Transactional
     public RecipeDTO getRecipeDTOById(long recipeId,
-                                      @Min(value = 10, message = "Kalorier kan ikke være under 10!") Float calories
+                                      @Min(value = 10, message = "Kalorier kan ikke være under 10!") Integer calories
     ) throws RecipeException {
         Optional<Recipe> recipeFetchIngredients = recipeRepository.getRecipe(recipeId);
 
@@ -139,7 +141,6 @@ public class RecipeService {
     @Transactional
     public Page<RecipesPendingDTO> findAllByApproval(Approval approval, Pageable pageable) {
         Page<Recipe> recipes = recipeRepository.findAllByApproval(approval, pageable);
-
         return recipes.map(recipe -> {
             int upvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, true);
             int downvotes = recipeVoteRepository.countAmountOfVotesUsingIsUpvoteAndRecipe(recipe, false);
@@ -147,9 +148,13 @@ public class RecipeService {
         });
     }
 
-    public Page<DisplayRecipeProjection> getPageOfRecipeDisplays(Approval approval, Pageable pageable) {
-        Page<DisplayRecipeProjection> allReviewRecipeViewByApproval = recipeRepository.getPageOfRecipeDisplay(approval, pageable);
-        return allReviewRecipeViewByApproval;
+    public Page<DisplayRecipeProjection.DTO> getPageOfRecipeDisplays(Approval approval, Pageable pageable, String searchByName, Integer caloriesWanted) {
+        final Page<DisplayRecipeProjection> pageOfRecipeDisplay = recipeRepository.getPageOfRecipeDisplay(approval, pageable, searchByName);
+        final Page<DisplayRecipeProjection.DTO> displayRecipeDTO =
+                caloriesWanted == null
+                    ? pageOfRecipeDisplay.map(DisplayRecipeProjection.DTO::new)
+                    : pageOfRecipeDisplay.map(displayRecipeProjection -> new DisplayRecipeProjection.DTO(displayRecipeProjection, caloriesWanted));
+        return displayRecipeDTO;
     }
 
 

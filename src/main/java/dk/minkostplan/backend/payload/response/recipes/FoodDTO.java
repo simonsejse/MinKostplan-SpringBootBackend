@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+/* Watch out for using this when returning because it has been known for causing n+1 query */
 public class FoodDTO {
     @JsonProperty(value="food_id")
     private Long id;
@@ -28,7 +29,7 @@ public class FoodDTO {
     private float addedSugars;
     @JsonProperty(value="food_fibers")
     private float fibers;
-    
+
     public FoodDTO(Food entity){
         this.id = entity.getId();
         this.foodType = entity.getFoodType();

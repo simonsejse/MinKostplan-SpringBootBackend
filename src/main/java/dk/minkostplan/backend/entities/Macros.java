@@ -26,15 +26,15 @@ public class Macros {
     private Recipe recipe;
 
     @Column(name="calories")
-    private Float calories;
+    private Integer calories;
     @Column(name="fat")
-    private Float fat;
+    private Integer fat;
     @Column(name="protein")
-    private Float protein;
+    private Integer protein;
     @Column(name="carbs")
-    private Float carbs;
+    private Integer carbs;
 
-    public Macros(Float calories, Float protein, Float fat, Float carbs) {
+    public Macros(Integer calories, Integer protein, Integer fat, Integer carbs) {
         this.calories = calories;
         this.protein = protein;
         this.fat = fat;

@@ -13,8 +13,8 @@ public class MacroDTO {
     @JsonProperty("wanted")
     private MacroDistributionDTO wanted;
 
-    public MacroDTO(Macros macros, Optional<Float> calories){
-        final Float defaultCalories = macros.getCalories();
+    public MacroDTO(Macros macros, Optional<Integer> calories){
+        final Integer defaultCalories = macros.getCalories();
 
         this.normal = new MacroDistributionDTO.Builder()
                 .calories(defaultCalories)
@@ -24,7 +24,7 @@ public class MacroDTO {
                 .build();
 
 
-        float wantedCalories = calories.orElse(defaultCalories);
+        Integer wantedCalories = calories.orElse(defaultCalories);
         float wantedProtein = macros.getProtein() * (wantedCalories / defaultCalories);
         float wantedFat = macros.getFat() * (wantedCalories / defaultCalories);
         float wantedCarbs = macros.getCarbs() * (wantedCalories / defaultCalories);

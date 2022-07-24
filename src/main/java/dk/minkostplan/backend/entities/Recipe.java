@@ -68,7 +68,7 @@ public class Recipe {
     private Boolean sustainable;
 
     @Column(name="pricePerServing", nullable = false)
-    private float pricePerServing;
+    private Integer pricePerServing;
 
     @Column(name="instructionsHtml", nullable = false, length = 500)
     private String instructions;
@@ -92,14 +92,6 @@ public class Recipe {
             optional = false
     )
     private Macros macros;
-
-    /* One Recipe to Many Food Attributes */
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy= "recipe"
-    )
-    private final List<Ingredient> ingredients = new ArrayList<>();
 
     @OneToMany(
         fetch = FetchType.LAZY,
@@ -169,7 +161,7 @@ public class Recipe {
         private Boolean cheap;
         private Boolean veryPopular;
         private Boolean sustainable;
-        private float pricePerServing;
+        private Integer pricePerServing;
         private String instructions;
         private Integer readyInMinutes;
         private String image;
@@ -192,18 +184,6 @@ public class Recipe {
         this.analyzedInstructions.remove(instruction);
         instruction.setRecipe(null);
     }
-
-    public void addIngredient(Ingredient ingredient){
-        ingredient.setRecipe(this);
-        this.ingredients.add(ingredient);
-    }
-
-    public void removeIngredient(Ingredient ingredient){
-        ingredients.remove(ingredient);
-        ingredient.setRecipe(null);
-        ingredient.setFood(null);
-    }
-
 
     public void setMacros(Macros macros) {
         macros.setRecipe(this);

@@ -12,8 +12,8 @@ import java.util.Set;
 
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
-  /*
-  @Query("SELECT i from Ingredient i where i.recipe = :recipe")
-    Optional<Set<Ingredient>> getRecipeIngredients(Recipe recipe);
-   */
+    @Query("SELECT i FROM Ingredient i WHERE i.recipe = :recipe")
+    Set<Ingredient> getIngredientsOfRecipe(Recipe recipe);
+    @Query("SELECT i FROM Ingredient i WHERE i.recipe IN :recipes")
+    Set<Ingredient> getIngredientsOfRecipes(List<Recipe> recipes);
 }

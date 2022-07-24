@@ -1,6 +1,7 @@
 package dk.minkostplan.backend.service;
 
 import dk.minkostplan.backend.entities.Food;
+import dk.minkostplan.backend.interfaceprojections.FoodProjection;
 import dk.minkostplan.backend.payload.response.recipes.FoodDTO;
 import dk.minkostplan.backend.repository.FoodRepository;
 import dk.minkostplan.backend.exceptions.FoodException;
@@ -19,8 +20,8 @@ public class FoodService {
         this.foodRepo = foodRepo;
     }
 
-    public List<FoodDTO> findAllFoodDTOs() {
-        return foodRepo.findAllFoodDTOs();
+    public List<FoodProjection> findAllFoodAsProjections() {
+        return foodRepo.findAllFoodAsProjection();
     }
 
     public Food getFoodById(long foodId) throws FoodException {
@@ -47,4 +48,5 @@ public class FoodService {
                 );
         return foodById;
     }
+
 }

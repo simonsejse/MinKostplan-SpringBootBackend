@@ -1,6 +1,7 @@
 package dk.minkostplan.backend.controllers;
 
 import dk.minkostplan.backend.exceptions.FoodException;
+import dk.minkostplan.backend.interfaceprojections.FoodProjection;
 import dk.minkostplan.backend.payload.response.recipes.FoodDTO;
 import dk.minkostplan.backend.service.FoodService;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class FoodController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FoodDTO>> getAllFoodsByDTOs(){
-        return ResponseEntity.ok(foodService.findAllFoodDTOs());
+    public ResponseEntity<List<FoodProjection>> getAllFoodAsAProjection(){
+        return ResponseEntity.ok(foodService.findAllFoodAsProjections());
     }
 
 
